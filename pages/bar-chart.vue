@@ -1,0 +1,64 @@
+<template>
+    <div id="container" class="flex justify-center items-center h-screen">
+        <h1 class="text-4xl font-bold text-center">Hello, world!</h1>
+    </div>
+</template>
+
+<script setup lang="ts">
+import * as d3 from 'd3';
+
+try {
+    const json = await useFetch('http://127.0.0.1:8000/api/bar-chart');
+    console.log(json);
+    
+    // Mounted
+    onMounted(() => {
+        console.log("mounted");
+        // Declare the chart dimensions and margins.
+        const width = 640;
+        const height = 400;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        // Declare the x (horizontal position) scale.
+        const x = d3.scaleUtc()
+            .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+            .range([marginLeft, width - marginRight]);
+
+        // Declare the y (vertical position) scale.
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height - marginBottom, marginTop]);
+
+        // Create the SVG container.
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add the x-axis.
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x));
+
+        // Add the y-axis.
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y));
+
+        // Return the SVG element.
+        const container = d3.select("#container");
+        container.node().append(svg.node());
+    });
+} catch (error) {
+    console.log(error);
+}
+</script>
+
+<style>
+/* Import Tailwind CSS */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+</style>
