@@ -71,6 +71,18 @@ onMounted(() => {
     { date: new Date("2023-05-01"), value: 50 },
   ];
 
+  const data2 = [
+    { date: new Date("2023-01-01"), value: 10 },
+    { date: new Date("2023-02-01"), value: 30 },
+    { date: new Date("2023-03-01"), value: 30 },
+    { date: new Date("2023-04-01"), value: 45 },
+    { date: new Date("2023-05-01"), value: 50 },
+    { date: new Date("2023-06-01"), value: 60 },
+    { date: new Date("2023-07-01"), value: 70 },
+    { date: new Date("2023-08-01"), value: 80 },
+    { date: new Date("2023-09-01"), value: 90 },
+  ];
+
   // Update the data domain
   x.domain(d3.extent(data, (d) => d.date));
   y.domain(d3.extent(data, (d) => d.value));
@@ -81,14 +93,20 @@ onMounted(() => {
     .x((d) => x(d.date))
     .y((d) => y(d.value));
 
+  const line2 = d3
+    .line()
+    .x((d) => x(d.date))
+    .y((d) => y(d.value));
+
   // Create the line path
   const linePath = line(data);
+  const linePath2 = line2(data2);
 
-  // Disable the area under the curve
-  //linePath.attr("fill", "none");
+  svg.style("fill", "transparent");
 
   // Add the line path to the SVG element
   svg.append("path").datum(data).attr("d", linePath).attr("stroke", "red");
+  svg.append("path").datum(data2).attr("d", linePath2).attr("stroke", "blue");
 
   // Update the axes
   svg.select(".x-axis").call(d3.axisBottom(x));
