@@ -102,6 +102,7 @@ onMounted(() => {
   const linePath = line(data);
   const linePath2 = line2(data2);
 
+  //making the area under the graph transparent
   svg.style("fill", "transparent");
 
   // Add the line path to the SVG element
