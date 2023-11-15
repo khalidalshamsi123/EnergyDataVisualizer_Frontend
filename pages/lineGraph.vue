@@ -13,6 +13,11 @@ const { data: data, error } = await useFetch(
   `${config.public.baseUrl}/api/line-graph`
 );
 
+//testing, to fetch the values of 'normalised_resistance'
+data.value.forEach((item) => {
+  console.log(item["Normalised_Resistance_heater_heat"]);
+});
+
 //console logging the data
 console.log(data.value);
 console.log(error.value);
