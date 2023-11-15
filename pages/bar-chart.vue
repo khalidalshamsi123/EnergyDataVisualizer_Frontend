@@ -16,37 +16,12 @@ try {
     
     // Mounted
     onMounted(() => {
-        // Extract unique heating technology types. This will be used for the x-axis.
-        // This work will probably be pushed to the backend in the future.
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-        const heatingTypes = [...new Set([...data.thermal_characteristics_after_ee, ...data.thermal_characteristics_before_ee].map(d => d["Heating systems"]))];
+        // Unique heating technology types. This will be used for the x-axis.
+        const heatingTypes = data.heating_types;
 
-        const averagesBeforeEE = heatingTypes.map(heatingType => {
-            const values = data.thermal_characteristics_before_ee
-                // We filter out all the data not relating to the current heating type.
-                .filter(d => d["Heating systems"] === heatingType)
-                // We then return an array of the heat demand values for the current heating type
-                .map(d => d["Average annual heat demand kWh"]);
-            // These values are then passed to the d3.mean function, which returns the average.
-            // This average is then returned as an object with the heating type and average.
-            // The object is stored in the map created by the heatingTypes.map function.
-            return {
-                heatingType,
-                average: d3.mean(values),
-            };
-        });
-
-        // Same premise as above.
-        const averagesAfterEE = heatingTypes.map(heatingType => {
-            const values = data.thermal_characteristics_after_ee
-                .filter(d => d["Heating systems"] === heatingType)
-                .map(d => d["Average annual heat demand kWh"]);
-
-            return {
-                heatingType,
-                average: d3.mean(values),
-            };
-        });
+        // Get the average annual heat demand for each heating technology type.
+        const averagesBeforeEE = data.thermal_characteristics_before_ee;
+        const averagesAfterEE = data.thermal_characteristics_after_ee;
 
         // Set up SVG container.
         const svgWidth = 800;
@@ -55,9 +30,9 @@ try {
         const width = svgWidth - margin.left - margin.right;
         const height = svgHeight - margin.top - margin.bottom;
 
-        // Get the maximum annual heat demand figures from both datasets.
-        const beforeMax = d3.max(data.thermal_characteristics_before_ee, d => d["Average annual heat demand kWh"]);
-        const afterMax = d3.max(data.thermal_characteristics_after_ee, d => d["Average annual heat demand kWh"]);
+        // Get the maximum annual heat demand figures for both datasets.
+        const beforeMax = data.before_ee_max_value;
+        const afterMax = data.after_ee_max_value;
 
         // Create SVG container.
         const svg = d3.select("#container")
