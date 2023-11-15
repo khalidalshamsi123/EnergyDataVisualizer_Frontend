@@ -14,6 +14,8 @@ const { data: data, error } = await useFetch(
 );
 
 //testing, to fetch the values of 'normalised_resistance'
+//After Fetching the API data this code, iterates over the data array
+//and fetch the value of "Normalised_Resistance_heater_heat"
 data.value.forEach((item) => {
   console.log(item["Normalised_Resistance_heater_heat"]);
 });
