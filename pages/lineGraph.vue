@@ -13,18 +13,28 @@ const { data: data, error } = await useFetch(
   `${config.public.baseUrl}/api/line-graph`
 );
 
-//testing, to fetch the values of 'normalised_resistance'
-//After Fetching the API data this code, iterates over the data array
-//and fetch the value of "Normalised_Resistance_heater_heat" and find the 'index'
+//This iterates over the array using the map() function
+//And for each object in the array, a new object is created
+//with the date and value properties that are from the index and
+//Normalised_Resistance_heater_heat
 const resistanceHeaterHeatData = data.value.map((item) => {
   return {
     date: new Date(item.index),
-    value: item.Normalised_Resistance_heater_heat
+    value: item.Normalised_Resistance_heater_heat,
+  };
+});
+
+//Similar to the code before just different data, same date property
+const ashpHeatData = data.value.map((item) => {
+  return {
+    date: new Date(item.index),
+    value: item.Normalised_ASHP_heat,
   };
 });
 
 //console logging the data
-console.log(resistanceHeaterHeatData);
+//console.log(resistanceHeaterHeatData);
+console.log(ashpHeatData);
 console.log(error.value);
 
 //creating the graph
@@ -38,7 +48,7 @@ onMounted(() => {
   const height = 400;
   const marginTop = 20;
   const marginRight = 20;
-  const marginBottom = 30;
+  const marginBottom = 120;
   const marginLeft = 50;
 
   // Declare the x (horizontal position) scale.
@@ -82,22 +92,72 @@ onMounted(() => {
     .x((d) => x(d.date))
     .y((d) => y(d.value));
 
-  // const line2 = d3
-  //   .line()
-  //   .x((d) => x(d.date))
-  //   .y((d) => y(d.value));
+  const line2 = d3
+    .line()
+    .x((d) => x(d.date))
+    .y((d) => y(d.value));
 
   // Create the line path
   const linePath = line(resistanceHeaterHeatData);
-  // const linePath2 = line2(data2);
+  const linePath2 = line2(ashpHeatData);
 
   //making the area under the graph transparent
   svg.style("fill", "transparent");
 
   // Add the line path to the SVG element
-  svg.append("path").datum(resistanceHeaterHeatData).attr("d", linePath).attr("stroke", "red");
-  // svg.append("path").datum(data2).attr("d", linePath2).attr("stroke", "blue");
+  svg
+    .append("path")
+    .datum(resistanceHeaterHeatData)
+    .attr("d", linePath)
+    .attr("stroke", "red");
+  svg
+    .append("path")
+    .datum(ashpHeatData)
+    .attr("d", linePath)
+    .attr("stroke", "blue");
 
+  //adding a legend
+  const legendGroup = svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width / 2 - 5}, ${height - marginBottom + 40})`);
+
+  const legendEntries = [
+    {
+      data: resistanceHeaterHeatData,
+      color: "red",
+      label: "Resistance Heater Heat",
+    },
+    {
+      data: ashpHeatData,
+      color: "blue",
+      label: "ASHP Heat",
+    },
+  ];
+
+  let yOffset = 0;
+  for (const entry of legendEntries) {
+    const legendEntry = legendGroup
+      .append("g")
+      .attr("transform", `translate(0, ${yOffset})`);
+
+    const colorSwatch = legendEntry
+      .append("rect")
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill", entry.color);
+
+    const labelText = legendEntry
+      .append("text")
+      .attr("x", 25)
+      .attr("y", 10)
+      .attr("text-anchor", "start") // Position the text to the right of the color swatch
+      .attr('fill', 'black') // the colour of the text
+      .style("font-size", "10px") //the size of the text
+      .text(entry.label);
+
+    yOffset += 25;
+  }
   // Update the axes
   svg.select(".x-axis").call(d3.axisBottom(x));
   svg.select(".y-axis").call(d3.axisLeft(y));
