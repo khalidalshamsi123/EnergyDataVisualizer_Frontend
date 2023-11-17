@@ -1,5 +1,5 @@
 <template>
-	<UTable :rows="tableData" />
+	<UTable :rows="tableData" :columns="columns" />
 </template>
 
 <script setup>
@@ -9,6 +9,12 @@
 		tableName: String,
 		fields: Array,
 	});
+
+	const columns = props.fields.map(field => { return {
+		"key": field,
+		"label": field,
+		"sortable": true
+	}});
 
 	const { data: tableData } = await useFetch(`${config.public.baseUrl}/tables/${props.tableName}`, {
 		query: {
