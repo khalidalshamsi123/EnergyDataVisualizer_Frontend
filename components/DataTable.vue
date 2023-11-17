@@ -10,7 +10,7 @@
 		fields: Array,
 	});
 
-	const { data: tableData } = await useFetch(`${config.public.baseURL}/tables/${props.tableName}`, {
+	const { data: tableData } = await useFetch(`${config.public.baseUrl}/tables/${props.tableName}`, {
 		query: {
 			fields: props.fields.join(","),
 		},
