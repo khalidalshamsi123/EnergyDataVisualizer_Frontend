@@ -6,6 +6,9 @@
 </template>
 
 <script setup>
+//creating the graph
+import * as d3 from "d3";
+
 const config = useRuntimeConfig();
 
 //fetching the data from the API
@@ -32,23 +35,26 @@ const ashpHeatData = data.value.map((item) => {
   };
 });
 
-//console logging the data
-//console.log(resistanceHeaterHeatData);
-console.log(ashpHeatData);
-console.log(error.value);
+// let min = Infinity;
+// let max = -Infinity;
+let array = [];
 
-//creating the graph
-import * as d3 from "d3";
+for (var item of data.value) {
+  array.push(item.Normalised_ASHP_heat);
+  array.push(item.Normalised_Resistance_heater_heat);
+}
+
+var minAndMax = d3.extent(array);
 
 onMounted(() => {
-  console.log("mounted");
-
   // Declare the chart dimensions and margins.
   const width = 840;
-  const height = 400;
-  const marginTop = 20;
+  const height = 550;
+  const svgHeight = 1000;
+  const svgWidth = 900;
+  const marginTop = 30;
   const marginRight = 20;
-  const marginBottom = 120;
+  const marginBottom = 170;
   const marginLeft = 50;
 
   // Declare the x (horizontal position) scale.
@@ -60,15 +66,17 @@ onMounted(() => {
   // Declare the y (vertical position) scale.
   const y = d3
     .scaleLinear()
-    .domain(d3.extent(resistanceHeaterHeatData, (d) => d.value))
+    .domain(minAndMax)
     .range([height - marginBottom, marginTop]);
+
+  //y.ticks(10);
 
   // Create the SVG container.
   const svg = d3
     .create("svg")
     .attr("id", "d3-target")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
 
   // Add the x-axis.
   svg
@@ -84,7 +92,7 @@ onMounted(() => {
 
   // Update the data domain
   x.domain(d3.extent(resistanceHeaterHeatData, (d) => d.date));
-  y.domain(d3.extent(resistanceHeaterHeatData, (d) => d.value));
+  y.domain(minAndMax);
 
   // Create the line generator
   const line = d3
@@ -113,7 +121,7 @@ onMounted(() => {
   svg
     .append("path")
     .datum(ashpHeatData)
-    .attr("d", linePath)
+    .attr("d", linePath2)
     .attr("stroke", "blue");
 
   //adding a legend
