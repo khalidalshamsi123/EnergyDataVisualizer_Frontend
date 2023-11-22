@@ -35,8 +35,6 @@ const ashpHeatData = data.value.map((item) => {
   };
 });
 
-// let min = Infinity;
-// let max = -Infinity;
 let array = [];
 
 for (var item of data.value) {
