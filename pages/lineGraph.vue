@@ -42,7 +42,12 @@ const gshpHeatData = data.value.map((item) => {
   };
 });
 
-console.log(gshpHeatData);
+const gasBoilerHeatData = data.value.map((item) => {
+  return {
+    date: new Date(item.index),
+    value: item.Normalised_Gas_boiler_heat,
+  };
+});
 
 let array = [];
 //containing all the data in the array
@@ -50,6 +55,7 @@ for (var item of data.value) {
   array.push(item.Normalised_ASHP_heat);
   array.push(item.Normalised_Resistance_heater_heat);
   array.push(item.Normalised_GSHP_heat);
+  array.push(item.Normalised_Gas_boiler_heat);
 }
 
 //using D3 to find the minimum and maximum values of the array.
@@ -119,10 +125,17 @@ onMounted(() => {
     .x((d) => x(d.date))
     .y((d) => y(d.value)); 
 
+  const line4 = d3
+    .line()
+    .x((d) => x(d.date))
+    .y((d) => y(d.value));  
+
+
   // Create the line path
   const linePath = line(resistanceHeaterHeatData);
   const linePath2 = line2(ashpHeatData);
   const linePath3 = line3(gshpHeatData);
+  const linePath4 = line4(gasBoilerHeatData);
 
   //making the area under the graph transparent
   svg.style("fill", "transparent");
@@ -130,20 +143,28 @@ onMounted(() => {
   // Add the line path to the SVG element
   svg
     .append("path")
+    .datum(gasBoilerHeatData)
+    .attr("d", linePath4)
+    .attr("stroke", "red"); 
+
+  svg
+    .append("path")
     .datum(resistanceHeaterHeatData)
     .attr("d", linePath)
-    .attr("stroke", "red");
+    .attr("stroke", "orange");
+
   svg
     .append("path")
     .datum(ashpHeatData)
     .attr("d", linePath2)
-    .attr("stroke", "blue");
-   
+    .attr("stroke", "yellow");
+
   svg
     .append("path")
     .datum(gshpHeatData)
     .attr("d", linePath3)
     .attr("stroke", "green");
+
 
   //adding a legend
   const legendGroup = svg
@@ -152,14 +173,19 @@ onMounted(() => {
     .attr("transform", `translate(${width / 2 - 5}, ${height - marginBottom + 40})`);
 
   const legendEntries = [
+  {
+      data: gasBoilerHeatData,
+      color: "Red",
+      label: "Gas Boiler Heat",
+    },  
     {
       data: resistanceHeaterHeatData,
-      color: "red",
+      color: "Orange",
       label: "Resistance Heater Heat",
     },
     {
       data: ashpHeatData,
-      color: "blue",
+      color: "yellow",
       label: "ASHP Heat",
     },
     {
