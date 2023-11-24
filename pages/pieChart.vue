@@ -2,7 +2,7 @@
     <svg id="pie-chart-container" width = "400" height = "500"></svg>
    </template>
  <script setup lang="ts">
- import * as d3 from "d3";
+import * as d3 from "d3";
  
  const json = await useFetch("http://127.0.0.1:8000/api/piechart/");
  const data = json.data.value;
@@ -40,7 +40,50 @@
      .attr("fill", (d) => colorScale(d))
      .attr("stroke", "gray")
      .attr("stroke-width", 1);
- });
+
+// Adding legend 
+
+var color = d3.scaleOrdinal().domain(column_names).range(["red", "green", "blue", "purple"]);
+
+  // Add one dot in the legend for each name.
+  var size = 20;
+
+  // Create a group for the legend
+  var legendGroup = d3.select("#pie-chart-container").append("g").attr("transform", "translate(200,20)");
+
+  legendGroup
+    .selectAll("mydots")
+    .data(column_names)
+    .enter()
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", function (data, i) {
+      return i * (size + 5);
+    })
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function (data) {
+      return color(data);
+    })
+    .style("outline", "black");
+
+  // Add one dot in the legend for each name.
+  legendGroup
+    .selectAll("mylabels")
+    .data(column_names)
+    .enter()
+    .append("text")
+    .attr("x", size * 1.2)
+    .attr("y", function (data, i) {
+      return i * (size + 5) + size / 2;
+    })
+    .style("fill", "black")
+    .text(function (data) {
+      return data;
+    })
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle");
+});
  </script>
    
  
