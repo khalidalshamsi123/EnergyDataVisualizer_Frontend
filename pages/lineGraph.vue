@@ -170,7 +170,7 @@ onMounted(() => {
   const legendGroup = svg
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${width / 2 - 5}, ${height - marginBottom + 40})`);
+    .attr("transform", `translate(${width / 2 + 80}, ${height - marginBottom + 30})`);
 
   const legendEntries = [
   {
@@ -221,6 +221,37 @@ onMounted(() => {
   // Update the axes
   svg.select(".x-axis").call(d3.axisBottom(x));
   svg.select(".y-axis").call(d3.axisLeft(y));
+
+  //adding a title
+  const title = svg
+  .append("text")
+  //.attr("x", width / 2 - 110)
+  .attr("y", marginTop / 2)
+  .attr('fill', 'black')
+  .style("font-size", "18px")
+  .style("font-weight", "bold")
+  .text("Heat Output Comparison");
+
+  // Add x-axis title
+const xAxisTitle = svg
+  .append("text")
+  .attr("x", width / 2)
+  .attr("y", height - 120) // Position below the x-axis
+  .attr('fill', 'black')
+  .style("font-size", "12px")
+  .style("font-weight", "bold")
+  .style("text-anchor", "middle") // Center the text
+  .text("(Date)");
+
+// Add y-axis title
+const yAxisTitle = svg
+  .append("text")
+  .attr("x", marginLeft - 30) // Position to the left of the y-axis
+  .attr("y", height / 2) // Center vertically
+  .style("font-size", "12px")
+  .style("font-weight", "bold")
+  .style("text-anchor", "middle") // Center the text
+  .text("Heat Output (Normalized)");
 
   // Add the SVG element to the DOM.
   const container = d3.select("#container");
