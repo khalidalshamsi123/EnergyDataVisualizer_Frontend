@@ -35,13 +35,24 @@ const ashpHeatData = data.value.map((item) => {
   };
 });
 
-let array = [];
+const gshpHeatData = data.value.map((item) => {
+  return {
+    date: new Date(item.index),
+    value: item.Normalised_GSHP_heat,
+  };
+});
 
+console.log(gshpHeatData);
+
+let array = [];
+//containing all the data in the array
 for (var item of data.value) {
   array.push(item.Normalised_ASHP_heat);
   array.push(item.Normalised_Resistance_heater_heat);
+  array.push(item.Normalised_GSHP_heat);
 }
 
+//using D3 to find the minimum and maximum values of the array.
 var minAndMax = d3.extent(array);
 
 onMounted(() => {
@@ -103,9 +114,15 @@ onMounted(() => {
     .x((d) => x(d.date))
     .y((d) => y(d.value));
 
+  const line3 = d3
+    .line()
+    .x((d) => x(d.date))
+    .y((d) => y(d.value)); 
+
   // Create the line path
   const linePath = line(resistanceHeaterHeatData);
   const linePath2 = line2(ashpHeatData);
+  const linePath3 = line3(gshpHeatData);
 
   //making the area under the graph transparent
   svg.style("fill", "transparent");
@@ -121,6 +138,12 @@ onMounted(() => {
     .datum(ashpHeatData)
     .attr("d", linePath2)
     .attr("stroke", "blue");
+   
+  svg
+    .append("path")
+    .datum(gshpHeatData)
+    .attr("d", linePath3)
+    .attr("stroke", "green");
 
   //adding a legend
   const legendGroup = svg
@@ -138,6 +161,11 @@ onMounted(() => {
       data: ashpHeatData,
       color: "blue",
       label: "ASHP Heat",
+    },
+    {
+      data: gshpHeatData,
+      color: "green",
+      label: "GSHP Heat",
     },
   ];
 
