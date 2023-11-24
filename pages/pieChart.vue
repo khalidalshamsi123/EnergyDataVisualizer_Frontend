@@ -1,6 +1,11 @@
 <template>
+
+    <div class="flex items-center justify-center">
     <svg id="pie-chart-container" width = "400" height = "500"></svg>
+    </div>
+
    </template>
+
  <script setup lang="ts">
 import * as d3 from "d3";
  
@@ -83,6 +88,14 @@ var color = d3.scaleOrdinal().domain(column_names).range(["red", "green", "blue"
     })
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle");
+
+// Add a title to the chart
+d3.select("#pie-chart-container")
+    .append("text")
+    .attr("y", 10) // Adjust the y-coordinate as needed
+    .style("font-size", "12px")
+    .style("text-decoration", "underline")
+    .text("Average Energy Efficiency Improvement Costs For Heating Technologies");
 });
  </script>
    
