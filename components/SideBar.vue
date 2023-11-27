@@ -3,6 +3,7 @@
     <aside
       class="w-56 flex-shrink-5"
       :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
+      :style="{ width: isSidebarOpen ? '256px' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
     >
       <ul>
         <div>
@@ -45,7 +46,6 @@
   display: flex;
   align-items: center;
   padding: 0.5rem;
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .researcher-text {
@@ -102,8 +102,10 @@
   left: 0px; 
   top: 0;
   z-index: 0;
-  transition: width 0.3s ease, opacity 0.3s ease; 
+  transition: transform 0.9s ease;
+  transform: scale(1);
 }
+
 </style>
 
 <script>
