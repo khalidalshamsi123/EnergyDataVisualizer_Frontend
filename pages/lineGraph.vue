@@ -245,16 +245,6 @@ onMounted(() => {
     .style("text-anchor", "middle") // Center the text
     .text("(Date)");
 
-  // Add y-axis title
-  const yAxisTitle = svg
-    .append("text")
-    .attr("x", marginLeft - 30) // Position to the left of the y-axis
-    .attr("y", height / 2) // Center vertically
-    .style("font-size", "12px")
-    .style("font-weight", "bold")
-    .style("text-anchor", "middle") // Center the text
-    .text("Heat Output (Normalized)");
-
   //The creation of the ToolTip
   const overlay = d3
     .select("#overlay")
@@ -293,7 +283,7 @@ onMounted(() => {
     .style("border-radius", "5px")
     .style("display", "none")
     .style("font-size", "12px")
-    .style("left", "14%") // Center horizontally
+    .style("left", "35%") // Center horizontally
     .style("top", "47%") // Center vertically
     .style("transform", "translate(-50%, -50%)");
 
@@ -359,5 +349,13 @@ onMounted(() => {
   stroke: steelblue;
   stroke-width: 2px;
   fill: transparent;
+}
+
+#container {
+  position: relative;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  margin-top: 50px; /* Adjust as needed */
 }
 </style>
