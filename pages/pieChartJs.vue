@@ -2,8 +2,10 @@
 import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend, Colors } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 
+const config = useRuntimeConfig();
+
 //Fetch the data from the api
-const json = await useFetch("http://127.0.0.1:8000/api/piechartjs/");
+const json = await useFetch(`${config.public.baseUrl}/api/piechartjs`);
 const jsonData = json.data.value;
 
 const data = [];
