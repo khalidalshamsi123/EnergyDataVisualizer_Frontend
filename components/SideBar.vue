@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   font-size: 2.5rem;
-  color: #43ed21;
+  color: #edba21;
 }
 
 .sidebar-link {
