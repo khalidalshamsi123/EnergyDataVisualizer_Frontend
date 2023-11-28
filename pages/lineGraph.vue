@@ -292,7 +292,8 @@ onMounted(() => {
     .style("border", "1px solid #ddd")
     .style("border-radius", "5px")
     .style("display", "none")
-    .style("left", "20%") // Center horizontally
+    .style("font-size", "12px")
+    .style("left", "14%") // Center horizontally
     .style("top", "47%") // Center vertically
     .style("transform", "translate(-50%, -50%)");
 
