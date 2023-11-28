@@ -5,7 +5,7 @@
       :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
       :style="{ width: isSidebarOpen ? '256px' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
     >
-      <ul>
+    <ul>
         <div>
           <li>
             <button @click="toggleSidebar()" class="toggle-button">
@@ -14,7 +14,8 @@
             </button>
           </li>
         </div>
-        <div v-show="isSidebarOpen" :class="[{ 'bg-black': isSidebarOpen,'text-gray-50': isSidebarOpen }]">
+            
+        <div class="hidden" :class="[{ 'sidebar-open': isSidebarOpen }]">
           <li><router-link to="/home" class="sidebar-link"><span style="margin-bottom: 4px;">🏠&nbsp;&nbsp;</span>Home Page</router-link></li>
           <li><router-link to="/about" class="sidebar-link"><span style= "margin-left: 4px;">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link></li>
           <li><router-link to="/contact" class="sidebar-link"><span style="margin-bottom: 4px;">💬&nbsp;&nbsp;</span>Contact Us</router-link></li>
@@ -23,7 +24,7 @@
         </div>
       </ul>
     </aside>
-    <div v-if="!isSidebarOpen" class="collapsed-background">
+    <div v-show="!isSidebarOpen" class="collapsed-background">
       <ul>
         <li><button class="arrow self-center text-center" style="z-index: 1;" @click="toggleSidebar">&raquo;</button></li>
         <li><router-link to="/home" class="sidebar-link"><span style="margin-left: 4px;">🏠&nbsp;&nbsp;</span></router-link></li>
@@ -76,6 +77,11 @@
   color: #edba21;
 }
 
+.sidebar-open {
+  @apply bg-black text-gray-50 block;
+}
+
+
 .sidebar-link {
   display: flex;
   align-items: center;
@@ -108,17 +114,10 @@
 
 </style>
 
-<script>
-export default {
-  data() {
-    return {
-      isSidebarOpen: true,
-    };
-  },
-  methods: {
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
-  },
+<script setup>
+const isSidebarOpen = ref(true);
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
 };
 </script>
