@@ -2,6 +2,7 @@
   <div>
     <!--{{ data }}-->
     <div id="container"></div>
+    <div id="overlay"></div>
   </div>
 </template>
 
@@ -123,13 +124,12 @@ onMounted(() => {
   const line3 = d3
     .line()
     .x((d) => x(d.date))
-    .y((d) => y(d.value)); 
+    .y((d) => y(d.value));
 
   const line4 = d3
     .line()
     .x((d) => x(d.date))
-    .y((d) => y(d.value));  
-
+    .y((d) => y(d.value));
 
   // Create the line path
   const linePath = line(resistanceHeaterHeatData);
@@ -145,7 +145,7 @@ onMounted(() => {
     .append("path")
     .datum(gasBoilerHeatData)
     .attr("d", linePath4)
-    .attr("stroke", "red"); 
+    .attr("stroke", "red");
 
   svg
     .append("path")
@@ -165,19 +165,21 @@ onMounted(() => {
     .attr("d", linePath3)
     .attr("stroke", "green");
 
-
   //adding a legend
   const legendGroup = svg
     .append("g")
     .attr("class", "legend")
-    .attr("transform", `translate(${width / 2 + 80}, ${height - marginBottom + 30})`);
+    .attr(
+      "transform",
+      `translate(${width / 2 + 80}, ${height - marginBottom + 30})`
+    );
 
   const legendEntries = [
-  {
+    {
       data: gasBoilerHeatData,
       color: "Red",
       label: "Gas Boiler Heat",
-    },  
+    },
     {
       data: resistanceHeaterHeatData,
       color: "Orange",
@@ -212,7 +214,7 @@ onMounted(() => {
       .attr("x", 25)
       .attr("y", 10)
       .attr("text-anchor", "start") // Position the text to the right of the color swatch
-      .attr('fill', 'black') // the colour of the text
+      .attr("fill", "black") // the colour of the text
       .style("font-size", "10px") //the size of the text
       .text(entry.label);
 
@@ -224,34 +226,114 @@ onMounted(() => {
 
   //adding a title
   const title = svg
-  .append("text")
-  //.attr("x", width / 2 - 110)
-  .attr("y", marginTop / 2)
-  .attr('fill', 'black')
-  .style("font-size", "18px")
-  .style("font-weight", "bold")
-  .text("Heat Output Comparison");
+    .append("text")
+    //.attr("x", width / 2 - 110)
+    .attr("y", marginTop / 2)
+    .attr("fill", "black")
+    .style("font-size", "18px")
+    .style("font-weight", "bold")
+    .text("Heat Output Comparison");
 
   // Add x-axis title
-const xAxisTitle = svg
-  .append("text")
-  .attr("x", width / 2)
-  .attr("y", height - 120) // Position below the x-axis
-  .attr('fill', 'black')
-  .style("font-size", "12px")
-  .style("font-weight", "bold")
-  .style("text-anchor", "middle") // Center the text
-  .text("(Date)");
+  const xAxisTitle = svg
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", height - 120) // Position below the x-axis
+    .attr("fill", "black")
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
+    .style("text-anchor", "middle") // Center the text
+    .text("(Date)");
 
-// Add y-axis title
-const yAxisTitle = svg
-  .append("text")
-  .attr("x", marginLeft - 30) // Position to the left of the y-axis
-  .attr("y", height / 2) // Center vertically
-  .style("font-size", "12px")
-  .style("font-weight", "bold")
-  .style("text-anchor", "middle") // Center the text
-  .text("Heat Output (Normalized)");
+  // Add y-axis title
+  const yAxisTitle = svg
+    .append("text")
+    .attr("x", marginLeft - 30) // Position to the left of the y-axis
+    .attr("y", height / 2) // Center vertically
+    .style("font-size", "12px")
+    .style("font-weight", "bold")
+    .style("text-anchor", "middle") // Center the text
+    .text("Heat Output (Normalized)");
+
+  //The creation of the ToolTip
+  const overlay = d3
+    .select("#overlay")
+    .style("position", "absolute")
+    .style("width", svgWidth + "px")
+    .style("height", svgHeight + "px")
+    .style("background-color", "transparent")
+    .on("mouseover", handleMouseOver)
+    .on("mouseout", handleMouseOut)
+    .on("mousemove", handleMouseMove);
+
+  function handleMouseOver() {
+    // Show the tooltip on mouseover
+    tooltip.style("display", "block");
+  }
+
+  function handleMouseOut() {
+    // Hide the tooltip on mouseout
+    tooltip.style("display", "none");
+  }
+
+  function handleMouseMove(event) {
+    // Update tooltip position based on mouse coordinates
+    const [x, y] = d3.pointer(event);
+    tooltip.style("transform", `translate(${x}px, ${y}px)`);
+  }
+
+  // Create a tooltip
+  const tooltip = d3
+    .select("#container")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "10px")
+    .style("background-color", "white")
+    .style("border", "1px solid #ddd")
+    .style("border-radius", "5px")
+    .style("display", "none")
+    .style("left", "20%") // Center horizontally
+    .style("top", "47%") // Center vertically
+    .style("transform", "translate(-50%, -50%)");
+
+  // (ToolTip) Add data points to the line paths
+  svg
+    .selectAll(".data-point")
+    .data(data.value)
+    .enter()
+    .append("circle")
+    .attr("class", "data-point")
+    .attr("cx", (d) => x(new Date(d.index)))
+    .attr("cy", (d) =>
+      y(
+        d.Normalised_Resistance_heater_heat,
+        d.Normalised_Gas_boiler_heat,
+        d.Normalised_ASHP_heat,
+        d.Normalised_GSHP_heat
+      )
+    )
+    .attr("r", 5)
+    .style("fill", "transparent")
+    .on("mouseover", showDataPointTooltip)
+    .on("mouseout", hideDataPointTooltip);
+
+  function showDataPointTooltip(event, d) {
+    // Show tooltip with data point information
+    const tooltipContent = `Date: ${new Date(d.index).toLocaleDateString()}
+    <br/>Gas Boiler Heat: ${d.Normalised_Gas_boiler_heat.toFixed(7)}
+    <br/>Resistance Heater Heat: ${d.Normalised_Resistance_heater_heat.toFixed(
+      7
+    )}
+    <br/>ASHP Heat: ${d.Normalised_ASHP_heat.toFixed(7)} 
+    <br/>GSHP Heat: ${d.Normalised_GSHP_heat.toFixed(7)}`;
+    tooltip.html(tooltipContent);
+    tooltip.style("display", "block");
+  }
+
+  function hideDataPointTooltip() {
+    // Hide tooltip on mouseout
+    tooltip.style("display", "none");
+  }
 
   // Add the SVG element to the DOM.
   const container = d3.select("#container");
@@ -259,4 +341,22 @@ const yAxisTitle = svg
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Add styles for the tooltip */
+#container {
+  position: relative;
+}
+
+#overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+}
+
+.data-point {
+  stroke: steelblue;
+  stroke-width: 2px;
+  fill: transparent;
+}
+</style>
