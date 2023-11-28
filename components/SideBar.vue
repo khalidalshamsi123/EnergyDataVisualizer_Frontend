@@ -5,18 +5,22 @@
       :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
       :style="{ width: isSidebarOpen ? '256px' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
     >
+
     <ul>
         <div>
           <li>
-            <button @click="toggleSidebar()" class="toggle-button">
-              <span v-if="isSidebarOpen" class="researcher-text white-text">rese</span>
+            <div class="toggle-button">
+            <span v-if="isSidebarOpen" class="researcher-text white-text">rese</span>
               <span v-if="isSidebarOpen" class="researcher-text orange-text">archer.</span>
+              <button @click="toggleSidebar()">
+              <span v-if="isSidebarOpen" class="arrow-change">&laquo;</span>
             </button>
+            </div>
           </li>
         </div>
             
         <div class="hidden" :class="[{ 'sidebar-open': isSidebarOpen }]">
-          <li><router-link to="/home" class="sidebar-link"><span style="margin-bottom: 4px;">🏠&nbsp;&nbsp;</span>Home Page</router-link></li>
+          <li><router-link to="/home" class="sidebar-link"><span class="mb-1">🏠&nbsp;&nbsp;</span>Home Page</router-link></li>
           <li><router-link to="/about" class="sidebar-link"><span style= "margin-left: 4px;">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link></li>
           <li><router-link to="/contact" class="sidebar-link"><span style="margin-bottom: 4px;">💬&nbsp;&nbsp;</span>Contact Us</router-link></li>
           <li><router-link to="/table" class="sidebar-link"><span style="margin-bottom: 4px;">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link></li>
@@ -44,8 +48,7 @@
 
 <style scoped>
 .toggle-button {
-  display: flex;
-  align-items: center;
+  @apply flex items-center;
   padding: 0.5rem;
 }
 
@@ -75,6 +78,17 @@
   align-items: center;
   font-size: 2.5rem;
   color: #edba21;
+}
+
+.arrow-change {
+  margin-left: 8.5px;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 2.5rem;
+  color: #edba21;
+  
+
+  
 }
 
 .sidebar-open {
