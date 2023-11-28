@@ -1,9 +1,9 @@
 <template>
   <div class="flex h-screen">
     <aside
-      class="w-56 flex-shrink-5"
+      class="w-56 flex-shrink-5 pr-4"
       :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
-      :style="{ width: isSidebarOpen ? '256px' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
+      :style="{ width: isSidebarOpen ? 'fit-content' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
     >
 
     <ul>
@@ -21,20 +21,20 @@
             
         <div class="hidden" :class="[{ 'sidebar-open': isSidebarOpen }]">
           <li><router-link to="/home" class="sidebar-link"><span class="mb-1">🏠&nbsp;&nbsp;</span>Home Page</router-link></li>
-          <li><router-link to="/about" class="sidebar-link"><span style= "margin-left: 4px;">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link></li>
-          <li><router-link to="/contact" class="sidebar-link"><span style="margin-bottom: 4px;">💬&nbsp;&nbsp;</span>Contact Us</router-link></li>
-          <li><router-link to="/table" class="sidebar-link"><span style="margin-bottom: 4px;">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link></li>
-          <li><router-link to="/settings" class="sidebar-link"><span style="margin-bottom: 4px;">⚙️&nbsp;&nbsp;&nbsp;</span>Settings</router-link></li>
+          <li><router-link to="/about" class="sidebar-link"><span class = "ml-1">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link></li>
+          <li><router-link to="/contact" class="sidebar-link"><span class ="mb-1">💬&nbsp;&nbsp;</span>Contact Us</router-link></li>
+          <li><router-link to="/table" class="sidebar-link"><span class = "mb-1">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link></li>
+          <li><router-link to="/settings" class="sidebar-link"><span class= "mb-1">⚙️&nbsp;&nbsp;&nbsp;</span>Settings</router-link></li>
         </div>
       </ul>
     </aside>
     <div v-show="!isSidebarOpen" class="collapsed-background">
       <ul>
         <li><button class="arrow self-center text-center" style="z-index: 1;" @click="toggleSidebar">&raquo;</button></li>
-        <li><router-link to="/home" class="sidebar-link"><span style="margin-left: 4px;">🏠&nbsp;&nbsp;</span></router-link></li>
-        <li><router-link to="/about" class="sidebar-link"><span style="margin-left: 8px;">ⓘ&nbsp;&nbsp;</span></router-link></li>
-        <li><router-link to="/contact" class="sidebar-link"><span style="margin-left: 4px;">💬&nbsp;&nbsp;</span></router-link></li>
-        <li><router-link to="/table" class="sidebar-link"><span style="margin-left: 2.5px;">▄█&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/home" class="sidebar-link"><span class="ml-1">🏠&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/about" class="sidebar-link"><span class ="ml-2">ⓘ&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/contact" class="sidebar-link"><span class="ml-1">💬&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/table" class="sidebar-link"><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link></li>
         <li><router-link to="/settings" class="sidebar-link"><span style="margin-left: 3.5px;">⚙️&nbsp;&nbsp;</span></router-link></li>
       </ul>
     </div>
