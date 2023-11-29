@@ -1,11 +1,23 @@
+<template>
+    <div>
+      <Pie
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </div>
+  </template>
 <script setup>
 import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend, Colors } from 'chart.js'
 import { Pie } from 'vue-chartjs'
 
-const config = useRuntimeConfig();
+const props = defineProps({
+    title: String,
+    data: Object
+});
 
-//Fetch the data from the api
-const json = await useFetch(`${config.public.baseUrl}/api/piechartjs`);
+// Take title and JSON data passed into the component.
+const title = props.title;
+const json = props.data;
 const jsonData = json.data.value;
 
 const data = [];
@@ -13,6 +25,7 @@ const labels = [];
 
 for (const item of jsonData) {
   data.push(item[1]);
+  // Capitalise first letter of label.
   let label = item[0].charAt(0).toUpperCase() + item[0].slice(1);
   labels.push(label);
 }
@@ -43,18 +56,8 @@ const chartOptions = ref({
     },
     title: {
       display: true,
-      text: 'Breakdown of energy effciency improvment costs by dwelling type (£)'
+      text: title
     }
   }
 })
-
 </script>
-<template>
-  <div>
-    <Pie
-      :data="chartData"
-      :options="chartOptions"
-    />
-  </div>
-</template>
-<style scoped lang="css"></style>
