@@ -1,12 +1,12 @@
 <template>
-    <div id="chart"></div>
+  <div>
+    <h1>Hello</h1>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+  </div>
 </template>
 
 <script setup>
-// Import Chart.js
-import Chart from "chart.js";
-
-
+import Chart from 'chart.js/auto'
 const config = useRuntimeConfig();
 
 //fetching the data from the API
@@ -25,105 +25,35 @@ const resistanceHeaterHeatData = data.value.map((item) => {
   };
 });
 
-//Similar to the code before just different data, same date property
-const ashpHeatData = data.value.map((item) => {
-  return {
-    date: new Date(item.index),
-    value: item.Normalised_ASHP_heat,
-  };
-});
 
-const gshpHeatData = data.value.map((item) => {
-  return {
-    date: new Date(item.index),
-    value: item.Normalised_GSHP_heat,
-  };
-});
+const xValues = resistanceHeaterHeatData.map((item) => item.date);
+const xMonthValues = xValues.map((date) => date.toLocaleString("en-US", { month: "short" }));
 
-const gasBoilerHeatData = data.value.map((item) => {
-  return {
-    date: new Date(item.index),
-    value: item.Normalised_Gas_boiler_heat,
-  };
-});
 
-// Create the chart
-const ctx = document.getElementById('chart').getContext('2d');
-  const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: resistanceHeaterHeatData.map(item => item.date),
-      datasets: [
-        {
-          label: 'Resistance Heater Heat',
-          data: resistanceHeaterHeatData.map(item => item.value),
-          borderColor: 'orange',
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-        },
-        {
-          label: 'ASHP Heat',
-          data: ashpHeatData.map(item => item.value),
-          borderColor: 'yellow',
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-        },
-        {
-          label: 'GSHP Heat',
-          data: gshpHeatData.map(item => item.value),
-          borderColor: 'green',
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-        },
-        {
-          label: 'Gas Boiler Heat',
-          data: gasBoilerHeatData.map(item => item.value),
-          borderColor: 'red',
-          borderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-        },
-      ],
-    },
-    options: {
-      title: {
-        display: true,
-        text: 'Heat Output Comparison',
-        fontSize: 18,
-        fontColor: 'black',
-      },
-      scales: {
-        xAxes: [{
-          type: 'time',
-          time: {
-            unit: 'day',
-            displayFormats: {
-              day: 'MMM DD',
-            },
-          },
-          gridLines: {
-            display: true,
-          },
-        }],
-        yAxes: [{
-          ticks: {
-            beginAtZero: true,
-            stepSize: 1,
-          },
-          gridLines: {
-            display: true,
-          },
-        }],
-      },
-      legend: {
-        position: 'top',
-      },
-    },
-  });
+const yValues = resistanceHeaterHeatData.map((item) => item.value);
+
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xMonthValues,
+    datasets: [{
+      fill: false,
+      lineTension: 0,
+      backgroundColor: "rgba(0,0,255,1.0)",
+      borderColor: "rgba(0,0,255,0.1)",
+      data: yValues
+    }]
+  },
+  options: {
+    legend: {display: false},
+    scales: {
+      xAxes: [{ type: "category" }],
+      yAxes: [{ticks: {min: 1, max:16}}],
+    }
+  }
+});
 </script>
+
 <style lang="scss" scoped>
 
 </style>
