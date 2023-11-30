@@ -11,6 +11,7 @@ const title = "Breakdown of energy effciency improvment costs by dwelling type (
     <PieChart
       :title=title
       :data=json
+      :asPercentage=false
     />
   </div>
 </template>

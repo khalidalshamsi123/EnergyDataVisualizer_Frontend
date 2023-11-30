@@ -11,6 +11,9 @@ import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend, Colors } from 'ch
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Pie } from 'vue-chartjs';
 
+// Register
+ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors, ChartDataLabels);
+
 const props = defineProps({
     title: String,
     data: Object,
@@ -49,9 +52,6 @@ if(props.asPercentage) {
   }
 }
 
-// Register
-ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors, ChartDataLabels);
-
 const chartData = ref({
   labels,
   datasets: [
@@ -60,34 +60,71 @@ const chartData = ref({
     },
   ],
 })
-const chartOptions = ref({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    colors: {
-      enabled : true
-    },
-    legend: {
-      enabled : true,
-      position: 'bottom',
-    },
-    datalabels: {
-      formatter: function(value, context) {
-        return value + '%';
+
+var chartOptions;
+
+if(props.asPercentage) {
+  chartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      colors: {
+        enabled : true
+      },
+      legend: {
+        enabled : true,
+        position: 'bottom',
+      },
+      datalabels: {
+        align: 'center',
+        formatter: function(value) {
+          return value + '%';
+        },
+        font: {
+          weight: 'bold',
+          size: 14
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(tooltipItem) {
+            console.log(tooltipItem)
+            var value = tooltipItem.parsed;
+            let label = value + "%";
+            return label;
+          }
+        }
+      },
+      title: {
+        display: true,
+        text: title
       }
-    },
-    tooltip: {
-      callbacks: {
-        label: function(tooltipItem, data) {
-          let label = tooltipItem.yLabel + "%";
-          return label;
+    }
+  })
+} else {
+  chartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      colors: {
+        enabled : true
+      },
+      legend: {
+        enabled : true,
+        position: 'bottom',
+      },
+      title: {
+        display: true,
+        text: title
+      },
+      datalabels: {
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14
         }
       }
-    },
-    title: {
-      display: true,
-      text: title
     }
-  }
-})
+  })
+}
 </script>
