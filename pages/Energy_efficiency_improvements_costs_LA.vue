@@ -2,7 +2,7 @@
 const config = useRuntimeConfig();
 
 // Populate tile and data variables.
-const json = await useFetch(`${config.public.baseUrl}/api/Energy_efficiency_improvements_costs_LA`);
+const json = await useFetch(`${config.public.baseUrl}/api/Energy_efficiency_improvements_costs_LA/average/dwelling_type`);
 const title = "Breakdown of energy effciency improvment costs by dwelling type (£)";
 
 </script>

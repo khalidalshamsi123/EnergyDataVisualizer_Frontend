@@ -23,11 +23,32 @@ const jsonData = json.data.value;
 const data = [];
 const labels = [];
 
-for (const item of jsonData) {
-  data.push(item[1]);
-  // Capitalise first letter of label.
-  let label = item[0].charAt(0).toUpperCase() + item[0].slice(1);
-  labels.push(label);
+if(!jsonData) {
+  throw new Error("No data found for pie chart to render.");
+}
+
+if(props.asPercentage) {
+  var sum = 0;
+
+  jsonData.forEach((item) => {
+    sum += item[1];
+  });
+
+  for (const item of jsonData) {
+    let percentage = (item[1] / sum) * 100;
+    percentage = Math.round((percentage + Number.EPSILON) * 100) / 100;
+    data.push(percentage);
+    // Capitalise first letter of label.
+    let label = item[0].charAt(0).toUpperCase() + item[0].slice(1);
+    labels.push(label);
+  }
+} else {
+  for (const item of jsonData) {
+    data.push(item[1]);
+    // Capitalise first letter of label.
+    let label = item[0].charAt(0).toUpperCase() + item[0].slice(1);
+    labels.push(label);
+  }
 }
 
 // Register
