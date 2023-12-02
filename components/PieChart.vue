@@ -22,11 +22,14 @@ const props = defineProps({
 
 // Take title and JSON data passed into the component.
 const title = props.title;
-const json = props.data;
-const jsonData = json.data.value;
+const jsonData = props.data;
 
 const data = [];
 const labels = [];
+
+if(!jsonData) {
+  throw new Error("No data found for pie chart to render.");
+}
 
 if(props.asPercentage) {
   var sum = 0;
@@ -45,6 +48,8 @@ if(props.asPercentage) {
   }
 } else {
   for (const item of jsonData) {
+    // Round to 2 decimal places. TODO. ask client whether this is appropriate.
+    item[1] = Math.round((item[1] + Number.EPSILON) * 100) / 100;
     data.push(item[1]);
     // Capitalise first letter of label.
     let label = item[0].charAt(0).toUpperCase() + item[0].slice(1);
