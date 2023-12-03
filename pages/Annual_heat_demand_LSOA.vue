@@ -1,74 +1,67 @@
 <script setup>
 const config = useRuntimeConfig();
 
-// Fetch both average and sum of data for the usage of each heating type before energy efficiency improvements.
-var heating_type_json = await useFetch(`${config.public.baseUrl}/api/Annual_heat_demand_LSOA/heating_type/before`, {
+// Specific data we want to fetch from the API.
+// The API selects the 'after' or 'before' data based on the 'rows' field.
+// The 'filter' field is used to understand what column data we want to use in the calculations.
+const data_required = [
+  { "filter": "heating_type", "rows": "before" },
+  { "filter": "heating_type", "rows": "after" },
+  { "filter": "dwelling_type", "rows": "before" },
+  { "filter": "dwelling_type", "rows": "after" }
+];
+
+// Fetch the data from the API.
+var jsonData = await useFetch(`${config.public.baseUrl}/api/Annual_heat_demand_LSOA`, {
+  method: 'post',
+  body: JSON.stringify(data_required),
   transform: (response) => {
-    if(response.sum) {
-      // Convert each sum to gigawatt hours from kilowatt hours.
-      for (const item of response.sum) {
+    for (const key in response) {
+      for (const item of response[key]['sum']) {
+        // In this instance we know the sum is in kilowatt hours.
+        // Convert each sum to gigawatt hours from kilowatt hours.
         item[1] = item[1] / 1000000;
       }
     }
+    // Array of objects containing the data for each chart.
     return response;
   }
 });
 
-heating_type_json = heating_type_json.data.value;
+// Array of configuration objects for each chart. Each object contains the chart title, and whether the data should be displayed as a percentage.
+// The data each chart should use is added to each object in the loop below.
+const chartConfigurations = [
+  // Before.
+  { type: 'heating_type', title: 'Breakdown of average heat demand per heating technology before energy efficiency improvements (%)', asPercentage: true, datasetType: 'before' },
+  { type: 'heating_type', title: 'Breakdown of overall heat demand per heating technology before energy efficiency improvements (GWh)', asPercentage: false, datasetType: 'before' },
+  { type: 'dwelling_type', title: 'Breakdown of average heat demand by dwelling type before energy efficiency improvements (%)', asPercentage: true, datasetType: 'before' },
+  { type: 'dwelling_type', title: 'Breakdown of overall heat demand per dwelling type before energy efficiency improvements (GWh)', asPercentage: false, datasetType: 'before' },
+  // After.
+  { type: 'heating_type', title: 'Breakdown of average heat demand per heating technology after energy efficiency improvements (%)', asPercentage: true, datasetType: 'after' },
+  { type: 'heating_type', title: 'Breakdown of overall heat demand per heating technology after energy efficiency improvements (GWh)', asPercentage: false, datasetType: 'after' },
+  { type: 'dwelling_type', title: 'Breakdown of average heat demand by dwelling type after energy efficiency improvements (%)', asPercentage: true, datasetType: 'after' },
+  { type: 'dwelling_type', title: 'Breakdown of overall heat demand per dwelling type after energy efficiency improvements (GWh)', asPercentage: false, datasetType: 'after' },
+];
 
-// Percentage title.
-const average_heat_demand_per_heating_type_title = "Breakdown of average heat demand per heating technology (%)";
-// Figure title.
-const sum_heat_demand_per_heating_type_title = "Breakdown of overall heat demand per heating technology (GWh)";
-
-// Fetch both average and sum of data for energy usage across different dwelling types before energy efficiency improvements.
-var dwelling_type_json = await useFetch(`${config.public.baseUrl}/api/Annual_heat_demand_LSOA/dwelling_type/before`, {
-  transform: (response) => {
-    if(response.sum) {
-      // Convert each sum to gigawatt hours from kilowatt hours.
-      for (const item of response.sum) {
-        item[1] = item[1] / 1000000;
-      }
-    }
-    return response;
+jsonData = jsonData.data.value;
+// Loop over chartConfiguration and add data as a field to each object based on matching type and datasetType.
+// Whether the sum or average is used depends on the asPercentage field.
+for (const config of chartConfigurations) {
+  // Check if the jsonData object has the required data for the current chart.
+  if(jsonData.hasOwnProperty(`${config.type}:${config.datasetType}`)) {
+    var chart_data = jsonData[`${config.type}:${config.datasetType}`];
+    config.data = chart_data[config.asPercentage ? 'average' : 'sum'];
   }
-});
-
-dwelling_type_json = dwelling_type_json.data.value;
-
-// Percentage title.
-const average_heat_demand_per_dwelling_type_title = "Breakdown of average heat demand by dwelling type (%)";
-// Figure title.
-const sum_heat_demand_per_dwelling_type_title = "Breakdown of overall heat demand per dwelling type (GWh)";
+}
 
 </script>
+
 <template>
-  <div>
+  <div v-for="config in chartConfigurations">
     <PieChart
-      :title=average_heat_demand_per_heating_type_title
-      :data=heating_type_json.average
-      :asPercentage=true
+      :title=config.title
+      :data=config.data
+      :asPercentage=config.asPercentage
     />
-  </div>
-  <div>
-    <PieChart
-      :title=sum_heat_demand_per_heating_type_title
-      :data=heating_type_json.sum
-      :asPercentage=false
-    /> 
-  </div>
-  <div>
-    <PieChart
-      :title=average_heat_demand_per_dwelling_type_title
-      :data=dwelling_type_json.average
-      :asPercentage=true
-    /> 
-  </div>
-  <div>
-    <PieChart
-      :title=sum_heat_demand_per_dwelling_type_title
-      :data=dwelling_type_json.sum
-      :asPercentage=false
-    /> 
   </div>
 </template>
