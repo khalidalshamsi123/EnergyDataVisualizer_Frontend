@@ -66,70 +66,52 @@ const chartData = ref({
   ],
 })
 
-var chartOptions;
+var chartOptions = ref({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      colors: {
+        enabled : true
+      },
+      legend: {
+        enabled : true,
+        position: 'bottom',
+      },
+      title: {
+        display: true,
+        text: title
+      },
+      datalabels: {
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14
+        }
+      }
+    }
+  })
 
 if(props.asPercentage) {
-  chartOptions = ref({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      colors: {
-        enabled : true
-      },
-      legend: {
-        enabled : true,
-        position: 'bottom',
-      },
-      datalabels: {
-        align: 'center',
-        formatter: function(value) {
-          return value + '%';
-        },
-        font: {
-          weight: 'bold',
-          size: 14
-        }
-      },
-      tooltip: {
-        callbacks: {
-          label: function(tooltipItem) {
-            console.log(tooltipItem)
-            var value = tooltipItem.parsed;
-            let label = value + "%";
-            return label;
-          }
-        }
-      },
-      title: {
-        display: true,
-        text: title
+  chartOptions.value.plugins.datalabels = {
+    align: 'center',
+    formatter: function(value) {
+      return value + '%';
+    },
+    font: {
+      weight: 'bold',
+      size: 14
+    }
+  }
+
+  chartOptions.value.plugins.tooltip = {
+    callbacks: {
+      label: function(tooltipItem) {
+        console.log(tooltipItem)
+        var value = tooltipItem.parsed;
+        let label = value + "%";
+        return label;
       }
     }
-  })
-} else {
-  chartOptions = ref({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      colors: {
-        enabled : true
-      },
-      legend: {
-        enabled : true,
-        position: 'bottom',
-      },
-      title: {
-        display: true,
-        text: title
-      },
-      datalabels: {
-        align: 'center',
-        font: {
-          weight: 'bold',
-          size: 14
-        }
-      }
-    }
-  })
+  }
 }
 </script>
