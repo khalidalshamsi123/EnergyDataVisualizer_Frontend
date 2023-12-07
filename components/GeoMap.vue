@@ -19,16 +19,18 @@
 
 	const props = defineProps({
 		mapName: String,
+		lsoaField: String,
 		center: Array,
 		zoom: Number,
-		fields: Array,
+		sql: String,
 	});
 
 	const config = useRuntimeConfig();
 
 	const { data: mapData, error } = await useFetch(`${config.public.baseUrl}/maps/${props.mapName}`, {
 		query: {
-			fields: props.fields.join(","),
+			sql: props.sql,
+			lsoa_field: props.lsoaField,
 		},
 	});
 
