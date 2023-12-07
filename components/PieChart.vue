@@ -106,7 +106,6 @@ if(props.asPercentage) {
   chartOptions.value.plugins.tooltip = {
     callbacks: {
       label: function(tooltipItem) {
-        console.log(tooltipItem)
         var value = tooltipItem.parsed;
         let label = value + "%";
         return label;
