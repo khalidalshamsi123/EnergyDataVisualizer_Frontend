@@ -1,30 +1,33 @@
 <template>
   <div class="flex h-screen">
-    <aside
-      class="w-56 flex-shrink-5 pr-4"
-      :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
-      :style="{ width: isSidebarOpen ? 'fit-content' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }"
-    >
+    <aside class="sticky top-0 left-0 h-screen" :class="[{ 'bg-black': isSidebarOpen, 'text-gray-50': isSidebarOpen }]"
+      :style="{ width: isSidebarOpen ? 'fit-content' : '56px', transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }">
 
-    <ul>
+      <ul>
         <div>
           <li>
             <div class="toggle-button">
-            <span v-if="isSidebarOpen" class="researcher-text white-text">rese</span>
-              <span v-if="isSidebarOpen" class="researcher-text orange-text">archer.</span>
+              <span v-if="isSidebarOpen" class="researcher-text text-white">rese</span>
+              <span v-if="isSidebarOpen" class="researcher-text text-orange-500">archer.</span>
               <button @click="toggleSidebar()">
-              <span v-if="isSidebarOpen" class="arrow-change">&laquo;</span>
-            </button>
+                <span v-if="isSidebarOpen" class="arrow-change">&laquo;</span>
+              </button>
             </div>
           </li>
         </div>
-            
+
         <div class="hidden" :class="[{ 'sidebar-open': isSidebarOpen }]">
-          <li><router-link to="/home" class="sidebar-link"><span class="mb-1">🏠&nbsp;&nbsp;</span>Home Page</router-link></li>
-          <li><router-link to="/about" class="sidebar-link"><span class = "ml-1">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link></li>
-          <li><router-link to="/contact" class="sidebar-link"><span class ="mb-1">💬&nbsp;&nbsp;</span>Contact Us</router-link></li>
-          <li><router-link to="/table" class="sidebar-link"><span class = "mb-1">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link></li>
-          <li><router-link to="/settings" class="sidebar-link"><span class= "mb-1">⚙️&nbsp;&nbsp;&nbsp;</span>Settings</router-link></li>
+          <li><router-link to="/home" class="sidebar-link"><span class="mb-1">🏠&nbsp;&nbsp;</span>Home
+              Page</router-link>
+          </li>
+          <li><router-link to="/about" class="sidebar-link"><span class="ml-1">ⓘ&nbsp;&nbsp;&nbsp;</span>About
+              Us</router-link></li>
+          <li><router-link to="/contact" class="sidebar-link"><span class="mb-1">💬&nbsp;&nbsp;</span>Contact
+              Us</router-link></li>
+          <li><router-link to="/table" class="sidebar-link"><span
+                class="mb-1">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link></li>
+          <li><router-link to="/settings" class="sidebar-link"><span
+                class="mb-1">⚙️&nbsp;&nbsp;&nbsp;</span>Settings</router-link></li>
         </div>
       </ul>
     </aside>
@@ -32,10 +35,11 @@
       <ul>
         <li><button class="arrow self-center text-center" style="z-index: 1;" @click="toggleSidebar">&raquo;</button></li>
         <li><router-link to="/home" class="sidebar-link"><span class="ml-1">🏠&nbsp;&nbsp;</span></router-link></li>
-        <li><router-link to="/about" class="sidebar-link"><span class ="ml-2">ⓘ&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/about" class="sidebar-link"><span class="ml-2">ⓘ&nbsp;&nbsp;</span></router-link></li>
         <li><router-link to="/contact" class="sidebar-link"><span class="ml-1">💬&nbsp;&nbsp;</span></router-link></li>
         <li><router-link to="/table" class="sidebar-link"><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link></li>
-        <li><router-link to="/settings" class="sidebar-link"><span style="margin-left: 3.5px;">⚙️&nbsp;&nbsp;</span></router-link></li>
+        <li><router-link to="/settings" class="sidebar-link"><span
+              style="margin-left: 3.5px;">⚙️&nbsp;&nbsp;</span></router-link></li>
       </ul>
     </div>
     <main class="flex-1 bg-gray-1 p-8">
@@ -60,18 +64,6 @@
   align-items: baseline;
 }
 
-.white-text {
-  color: #ffffff; 
-}
-
-.black-text {
-  color: #000000; 
-}
-
-.orange-text {
-  color: #ff9900; 
-}
-
 .arrow {
   margin-left: 15.5px;
   display: flex;
@@ -86,9 +78,9 @@
   display: block;
   font-size: 2.5rem;
   color: #edba21;
-  
 
-  
+
+
 }
 
 .sidebar-open {
@@ -104,9 +96,9 @@
 }
 
 .sidebar-link span {
-  margin-right: 0.3rem; 
-  font-size: 1.2rem; 
-  color: #ffffff; 
+  margin-right: 0.3rem;
+  font-size: 1.2rem;
+  color: #ffffff;
 }
 
 .sidebar-link:hover {
@@ -119,13 +111,12 @@
   height: 100%;
   background-color: #000000;
   position: fixed;
-  left: 0px; 
+  left: 0px;
   top: 0;
   z-index: 0;
   transition: transform 0.9s ease;
   transform: scale(1);
 }
-
 </style>
 
 <script setup>
