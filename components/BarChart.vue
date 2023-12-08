@@ -41,6 +41,8 @@ for (const dataset of datasets) {
         // Capitalise first letter of label.
         let label = data[0].charAt(0).toUpperCase() + data[0].slice(1);
         labels.add(label);
+        // Round data-point to 2 decimal places. TODO. ask client whether this is appropriate.
+        data[1] = Math.round((data[1] + Number.EPSILON) * 100) / 100;
         // Push array of values from one dataset into datasets array.
         data_from_individual_dataset.push(data[1]);
     }
