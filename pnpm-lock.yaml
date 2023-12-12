@@ -20,7 +20,7 @@ dependencies:
     specifier: ^3.0.5
     version: 3.0.5(@fortawesome/fontawesome-svg-core@6.5.1)(vue@3.3.9)
   chart.js:
-    specifier: ^4.4.0
+    specifier: 4.4.0
     version: 4.4.0
   chartjs-plugin-datalabels:
     specifier: ^2.2.0
