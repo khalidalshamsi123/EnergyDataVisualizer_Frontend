@@ -17,7 +17,7 @@
 					</div>
 
 					<div class="flex p-1 pt-0 mr-auto" v-if="isDropdownOpen">
-						<div class="before-after-options bg-white rounded p-3 h-32">
+						<div class="before-after-options bg-white rounded p-3 h-[8.5rem]">
 							<div class="option-container">
 								<input type="radio" id="before" v-model="selectedBeforeAfter" value="Before" class="mr-2" />
 								<label for="before" class="cursor-pointer top-full">Before</label>
@@ -28,7 +28,7 @@
 							</div>
 						</div>
 
-						<div class="heat-cold-options bg-white rounded p-4 ml-2 h-32">
+						<div class="heat-cold-options bg-white rounded p-4 ml-2 h-[8.5rem]">
 							<div class="heat-container">
 								<input type="radio" id="heat" v-model="selectedHeatDwelling" value="heat" class="mr-2" />
 								<label for="heat" class="cursor-pointer">Heating Type</label>
@@ -40,7 +40,7 @@
 							</div>
 						</div>
 
-						<div class="top-full w-96 bg-white rounded shadow p-4 h-32 ml-2">
+						<div class="top-full w-96 bg-white rounded shadow p-4 h-[8.5rem] ml-2">
 							<div class="grid grid-cols-3 gap-4 justify-end">
 								<div v-for="   option    in    ['Pie Chart', 'Bar Chart', 'Line Graph']   " :key="option"
 									class="option-container">
@@ -70,34 +70,25 @@
 					</div>
 
 					<div class="p-1 pt-0 mr-auto" v-if="isDownloadDropbarOpen">
-						<div class="download-snippet-options bg-white rounded p-3 h-32">
+						<div class="download-snippet-options bg-white rounded p-3 h-[8.5rem]">
 							<div class="option-container">
 								<input type="radio" id="snippet" v-model="SelectDownloadSnippet" value="Snippet"
 									class="mr-2" />
-								<label for="snippet" class="cursor-pointer top-full label-container">
-									<span class="text">Screenshot</span>
-									<span class="icon-container">
-										<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512"
-											class="icon">
-											<!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
-											<path
-												d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
-										</svg>
+								<label for="snippet" class="cursor-pointer top-full flex justify-center items-center">
+									<span class="text-2xl">
+										<font-awesome-icon icon="fa-solid fa-camera" />
 									</span>
+									<span class="text-center pl-2">Screenshot</span>
 								</label>
 							</div>
 							<div class="option-container">
 								<input type="radio" id="download" v-model="SelectDownloadSnippet" value="Download"
 									class="mr-2" />
-								<label for="download" class="cursor-pointer top-full another-container">
-									<span class="text">Download</span>
-									<span class="icon-container">
-										<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24"
-											viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
-											<path
-												d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
-										</svg>
+								<label for="download" class="cursor-pointer top-full flex justify-center items-center">
+									<span class="text-2xl pr-2">
+										<font-awesome-icon icon="fa-solid fa-download" />
 									</span>
+									<span class="text-center">Download</span>
 								</label>
 
 
@@ -192,7 +183,6 @@ export default {
 		},
 		selectOption(option) {
 			console.log(`Option '${option}' selected`);
-			this.isDropdownOpen = false;
 		},
 		selectNewOption(option) {
 			console.log(`New Option '${option}' selected`);
@@ -212,30 +202,10 @@ export default {
 	align-items: center;
 }
 
-.label-container {
-	margin-top: -10px;
+.option-container {
 	display: flex;
 	align-items: center;
-	height: 55px;
-}
-
-.another-container {
-	position: relative;
-	margin-top: 5px;
-	height: 55px;
-	align-items: center;
-}
-
-
-
--->.option-container {
-	display: flex;
-	align-items: center;
-}
-
-.text {
-	margin-right: -20px;
-	align-items: left;
+	@apply pb-1;
 }
 
 .thistext {
@@ -258,20 +228,9 @@ export default {
 	margin-top: px;
 }
 
-.icon-container {
-	position: relative;
-	align-items: center;
-	top: -23px;
-}
-
 .another-cotainer {
 	position: relative;
 	top: 1200px;
-}
-
-.cursor-pointer {
-	cursor: pointer;
-	text-align: center;
 }
 
 .download-snippet-options,
@@ -302,7 +261,6 @@ export default {
 	width: 100%;
 	border: 1px solid #e2e8f0;
 	border-radius: 0.25rem;
-	display: inline-block;
 }
 
 .download-snippet-options input[type="radio"]:checked+label,
