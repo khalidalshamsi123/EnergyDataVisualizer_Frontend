@@ -7,4 +7,7 @@ export default defineNuxtConfig({
 			baseUrl: process.env.BASE_URL || "http://127.0.0.1:8000",
 		},
 	},
+	css: [
+		'@fortawesome/fontawesome-svg-core/styles.css'
+	]
 });
