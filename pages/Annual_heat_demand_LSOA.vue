@@ -33,6 +33,11 @@
                         :sql="geoSql"
                     />
                 </template>
+                <template v-else-if="option === 'Table'">
+                    <div class="w-screen max-h-screen p-4 overflow-scroll" v-if="tableFields.length > 0">
+                        <DataTable table-name="Annual_heat_demand_LSOA" :fields="tableFields" />
+                    </div>
+                </template>
             </div>
         </div>
 
@@ -203,6 +208,49 @@
     const geoSql = ref(null);
     const geoTitle = ref(null);
 
+    const availableTableFields = [
+        "LSOA11CD",
+        "Area (km2)",
+        // "Average heat demand after energy efficiency measures for detached biomass boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for detached gas boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for detached oil boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for detached resistance heating (kWh)",
+        // "Average heat demand after energy efficiency measures for flat biomass boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for flat gas boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for flat oil boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for flat resistance heating (kWh)",
+        // "Average heat demand after energy efficiency measures for semi-detached biomass boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for semi-detached gas boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for semi-detached oil boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for semi-detached resistance heating (kWh)",
+        // "Average heat demand after energy efficiency measures for terraced biomass boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for terraced gas boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for terraced oil boiler (kWh)",
+        // "Average heat demand after energy efficiency measures for terraced resistance heating (kWh)",
+        // "Average heat demand before energy efficiency measures for detached biomass boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for detached gas boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for detached oil boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for detached resistance heating (kWh)",
+        // "Average heat demand before energy efficiency measures for flat biomass boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for flat gas boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for flat oil boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for flat resistance heating (kWh)",
+        // "Average heat demand before energy efficiency measures for semi-detached biomass boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for semi-detached gas boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for semi-detached oil boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for semi-detached resistance heating (kWh)",
+        // "Average heat demand before energy efficiency measures for terraced biomass boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for terraced gas boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for terraced oil boiler (kWh)",
+        // "Average heat demand before energy efficiency measures for terraced resistance heating (kWh)",
+        "Local Authority (2019)",
+        "Road length (m)",
+        "Rurality",
+        "Total heat demand after energy efficiency measures 2018 (kWh)",
+        "Total heat demand before energy efficiency measures 2018 (kWh)",
+    ];
+    const tableFields = ref([]);
+
     function toggleDropdown() {
         chartTypesDowndownOpen.value = !chartTypesDowndownOpen.value;
     }
@@ -295,6 +343,8 @@
                 case "Line Graph":
                     break;
                 case "Table":
+                    const containsCheck = selectedBeforeAfter.value === "before" ? "after" : "before";
+                    tableFields.value = availableTableFields.filter(field => !field.includes(containsCheck));
                     break;
                 case "Geographical Map":
                     switch (selectedBeforeAfter.value) {
