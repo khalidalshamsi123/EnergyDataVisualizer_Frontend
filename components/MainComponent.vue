@@ -200,6 +200,8 @@
         console.log(`Option '${option}' selected`);
     }
 
+    const chartsJson = ref(null);
+
     watch([selectedBeforeAfter, selectedHeatDwelling, selectedOptions, selectedAverageSum], async () => {
         // If any of the needed options are left null, return.
         if (
@@ -211,47 +213,55 @@
             return;
         }
 
-        // Specific data we want to fetch from the API.
-        // The API selects the 'after' or 'before' data based on the 'rows' field.
-        // The 'filter' field is used to understand what column data we want to use in the calculations.
-        const data_required = [{ filter: selectedHeatDwelling.value, rows: selectedBeforeAfter.value }];
-
-        // Populate title and data variables.
-        const { data: jsonData } = await useFetch(`${config.public.baseUrl}/api/Annual_heat_demand_LSOA`, {
-            method: "post",
-            body: data_required,
-            transform: response => {
-                for (const key in response) {
-                    for (const item of response[key]["sum"]) {
-                        // In this instance we know the sum is in kilowatt hours.
-                        // Convert each sum to gigawatt hours from kilowatt hours.
-                        item[1] = item[1] / 1000000;
-                    }
-                }
-                // Array of objects containing the data for each chart.
-                return response;
-            },
-        });
-
-        // Check if no data returned by API.
-        if (!jsonData || !jsonData.value) {
-            return;
-        }
-
         var chartData = [];
         var title = "";
         // TODO should probably be toggleable in UI.
         const asPercentage = false;
 
-        // Titles for graphs need to reflect which metric is being displayed.
-        if (selectedAverageSum.value === "average") {
-            chartData = jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfter.value}`]["average"];
-            title = `Breakdown of average heat demand per ${
-                selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-            } ${selectedBeforeAfter.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
-        } else if (selectedAverageSum.value === "sum") {
-            chartData = jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfter.value}`]["sum"];
-            title = `Breakdown of overall heat demand per ${
+        if (selectedOptions.value.includes("Pie Chart") || selectedOptions.value.includes("Bar Chart")) {
+            const key = `${selectedHeatDwelling.value}:${selectedBeforeAfter.value}`;
+
+            // Don't fetch chartdata unnecessarily.
+            if (chartsJson.value == null || !chartsJson.value[key]) {
+                // Specific data we want to fetch from the API.
+                // The API selects the 'after' or 'before' data based on the 'rows' field.
+                // The 'filter' field is used to understand what column data we want to use in the calculations.
+                const data_required = [{ filter: selectedHeatDwelling.value, rows: selectedBeforeAfter.value }];
+
+                // Populate title and data variables.
+                const { data: jsonData } = await useFetch(`${config.public.baseUrl}/api/Annual_heat_demand_LSOA`, {
+                    method: "post",
+                    body: data_required,
+                    transform: response => {
+                        for (const key in response) {
+                            for (const item of response[key]["sum"]) {
+                                // In this instance we know the sum is in kilowatt hours.
+                                // Convert each sum to gigawatt hours from kilowatt hours.
+                                item[1] = item[1] / 1000000;
+                            }
+                        }
+                        // Array of objects containing the data for each chart.
+                        return response;
+                    },
+                });
+
+                // Check if no data returned by API.
+                if (!jsonData || !jsonData.value) {
+                    console.error("No data returned by API");
+                    return;
+                }
+
+                chartsJson.value = jsonData.value;
+            }
+
+            // Titles for graphs need to reflect which metric is being displayed.
+            if (selectedAverageSum.value === "average") {
+                chartData = chartsJson.value[key]["average"];
+            } else if (selectedAverageSum.value === "sum") {
+                chartData = chartsJson.value[key]["sum"];
+            }
+
+            title = `Breakdown of ${selectedAverageSum.value === "average" ? "average" : "overall"} heat demand per ${
                 selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
             } ${selectedBeforeAfter.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
         }
