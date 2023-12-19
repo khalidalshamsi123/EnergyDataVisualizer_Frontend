@@ -1,5 +1,5 @@
 <template>
-    
+    <h1>Conact Us:</h1>
 <form @submit.prevent="submit(form)">
     <div class="input-wrapper">
         <label for="email">E-mail:</label>
@@ -120,6 +120,7 @@ textarea {
     padding: 20;
     align-items: center;
     color: white;
+    margin: auto;
 }
 
 p {
