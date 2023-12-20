@@ -27,6 +27,8 @@
     "chroma-js": "^2.4.2",
     "d3": "^7.8.5",
     "html2canvas": "^1.4.1",
+    "nodemailer": "^6.9.7",
+    "validator": "^13.11.0",
     "vue-chartjs": "^5.2.0"
   },
   "pnpm": {

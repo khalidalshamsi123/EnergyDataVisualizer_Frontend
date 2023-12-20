@@ -3,6 +3,10 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: ["@nuxt/ui"],
     runtimeConfig: {
+        MAILHOST: process.env.MAILHOST,
+        MAILPORT: process.env.MAILPORT,
+        MAILUSER: process.env.MAILUSER,
+        MAILPASSWORD: process.env.MAILPASSWORD,
         public: {
             baseUrl: "http://127.0.0.1:8000",
         },
