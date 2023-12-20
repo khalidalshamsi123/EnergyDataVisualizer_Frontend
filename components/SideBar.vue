@@ -18,11 +18,6 @@
 
                 <template class="bg-black text-gray-50 block">
                     <li>
-                        <router-link to="/home" class="sidebar-link"
-                            ><span class="mb-1">🏠&nbsp;&nbsp;</span>Home Page</router-link
-                        >
-                    </li>
-                    <li>
                         <router-link to="/about" class="sidebar-link"
                             ><span class="ml-1">ⓘ&nbsp;&nbsp;&nbsp;</span>About Us</router-link
                         >
@@ -33,13 +28,25 @@
                         >
                     </li>
                     <li>
-                        <router-link to="/table" class="sidebar-link"
-                            ><span class="mb-1">▄█&nbsp;&nbsp;&nbsp;</span>Analytics</router-link
+                        <router-link to="/Annual_heat_demand_LSOA" class="sidebar-link"
+                            ><span class="ml-0.5">▄█&nbsp;&nbsp;</span>Annual heat demand (LSOA)</router-link
                         >
                     </li>
                     <li>
-                        <router-link to="/settings" class="sidebar-link"
-                            ><span class="mb-1">⚙️&nbsp;&nbsp;&nbsp;</span>Settings</router-link
+                        <router-link to="/Energy_efficiency_improvements_costs_LA" class="sidebar-link"
+                            ><span class="ml-0.5">▄█&nbsp;&nbsp;</span>Energy efficiency improvements costs
+                            (LA)</router-link
+                        >
+                    </li>
+                    <li>
+                        <router-link to="/Half-hourly_profiles_of_heating_technologies" class="sidebar-link"
+                            ><span class="ml-0.5">▄█&nbsp;&nbsp;</span>Half-hourly profiles of heating
+                            technologies</router-link
+                        >
+                    </li>
+                    <li>
+                        <router-link to="/Thermal_characteristics" class="sidebar-link"
+                            ><span class="ml-0.5">▄█&nbsp;&nbsp;</span>Thermal characteristics</router-link
                         >
                     </li>
                 </template>
@@ -53,9 +60,6 @@
                     </button>
                 </li>
                 <li>
-                    <router-link to="/home" class="sidebar-link"><span class="ml-1">🏠&nbsp;&nbsp;</span></router-link>
-                </li>
-                <li>
                     <router-link to="/about" class="sidebar-link"><span class="ml-2">ⓘ&nbsp;&nbsp;</span></router-link>
                 </li>
                 <li>
@@ -64,13 +68,23 @@
                     >
                 </li>
                 <li>
-                    <router-link to="/table" class="sidebar-link"
+                    <router-link to="/Annual_heat_demand_LSOA" class="sidebar-link"
                         ><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link
                     >
                 </li>
                 <li>
-                    <router-link to="/settings" class="sidebar-link"
-                        ><span style="margin-left: 3.5px">⚙️&nbsp;&nbsp;</span></router-link
+                    <router-link to="/Energy_efficiency_improvements_costs_LA" class="sidebar-link"
+                        ><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link
+                    >
+                </li>
+                <li>
+                    <router-link to="/Half-hourly_profiles_of_heating_technologies" class="sidebar-link"
+                        ><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link
+                    >
+                </li>
+                <li>
+                    <router-link to="/Thermal_characteristics" class="sidebar-link"
+                        ><span class="ml-0.5">▄█&nbsp;&nbsp;</span></router-link
                     >
                 </li>
             </ul>
