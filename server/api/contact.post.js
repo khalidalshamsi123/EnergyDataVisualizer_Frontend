@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
-import validator from 'validator';
+import nodemailer from "nodemailer";
+import validator from "validator";
 const config = useRuntimeConfig();
 
 const transporter = nodemailer.createTransport({
@@ -11,47 +11,45 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export default defineEventHandler(async (event, response)=> {
+export default defineEventHandler(async (event, response) => {
     try {
         const body = await readBody(event);
 
-        await isValid(body)
-        
+        await isValid(body);
+
+        const config = useRuntimeConfig();
+
         const mail = await transporter.sendMail({
             form: `"${body.name} <${body.email}>`,
             to: config.CONTACTMAIL,
             subject: body.subject,
             text: body.message,
             html: body.message,
-
         });
 
-        console.log('Message sent: %s', mail.MessageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(mail));
+        console.log("Message sent: %s", mail.MessageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(mail));
         //return Promise.resolve;
 
-        
-        return 'Sent!';
+        return "Sent!";
     } catch (error) {
-        sendError(event, createError ({status: 400,
-        statusMessage: error}));
+        console.error(error);
+        sendError(event, createError({ status: 400, statusMessage: error }));
     }
 });
 
 async function isValid(body) {
     const errors = [];
 
-    if(validator.isEmpty(body.email || '')) errors.push({
-        field: 'email',
-        error: 'Field is required.'
-    })
+    if (validator.isEmpty(body.email || ""))
+        errors.push({
+            field: "email",
+            error: "Field is required.",
+        });
 
-    if(errors.length > 0) {
+    if (errors.length > 0) {
         return Promise.reject(errors);
-
     } else {
-        return Promise.resolve({})
-
+        return Promise.resolve({});
     }
 }
-
