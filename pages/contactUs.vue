@@ -52,7 +52,7 @@ const waiting = ref(false);
 
 async function submit(form){
     this.waiting = true;
-    await $fetch('http://localhost:3000/api/contact', {
+    await $fetch('/api/contact', {
         method: 'POST',
         body: form,
     }).then(() => {
