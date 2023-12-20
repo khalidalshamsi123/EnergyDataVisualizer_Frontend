@@ -175,19 +175,29 @@
                         sumArrays.forEach((datasetSumArray, index) => {
                             console.log(`Dataset ${index + 1}:`);
 
-                            for (const item of datasetSumArray) {
-                                console.log("Original value:", item[1]);
+                            console.log("Original array:", datasetSumArray);
 
-                                // Check if the value is a valid number before division
-                                if (typeof item[1] === "number" && !isNaN(item[1])) {
-                                    // In this instance, we know the sum is in kilowatt hours.
-                                    // Convert each sum to gigawatt hours from kilowatt hours.
-                                    item[1] = item[1] / 1000000;
-                                    console.log("Transformed value:", item[1]);
-                                } else {
-                                    console.log("Invalid value:", item[1]);
+                            function fixItem(array) {
+                                for (var i = 0; i < array.length; i++) {
+                                    const item = array[i];
+
+                                    // Check if the value is a valid number before division
+                                    if (typeof item === "number" && !isNaN(item)) {
+                                        // In this instance, we know the sum is in kilowatt hours.
+                                        // Convert each sum to gigawatt hours from kilowatt hours.
+                                        array[i] = item / 1000000;
+                                        console.log("Transformed value:", array[i]);
+                                    } else if (Array.isArray(item)) {
+                                        fixItem(item);
+                                    } else {
+                                        console.log("Invalid value:", item);
+                                    }
                                 }
                             }
+
+                            fixItem(datasetSumArray);
+
+                            console.log("Transformed array:", datasetSumArray);
                         });
                     } else {
                         console.log(`Invalid or missing 'sum' array for key: ${key}`);
@@ -218,7 +228,7 @@
             if (selectedAverageSum.value === "average") {
                 title = `Annual heat demand per ${
                     selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(kWh)"}`;
             } else if (selectedAverageSum.value === "sum") {
                 title = `Breakdown of overall heat demand per ${
                     selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
@@ -256,7 +266,7 @@
             if (selectedAverageSum.value === "average") {
                 title = `Annual heat demand per ${
                     selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(kWh)"}`;
             } else if (selectedAverageSum.value === "sum") {
                 title = `Breakdown of overall heat demand per ${
                     selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
