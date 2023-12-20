@@ -1,6 +1,6 @@
 <template>
-    <div class="page-container bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-        <div class="graph-container rounded bg-white shadow-md mb-8">
+    <div class="page-container dark:bg-neutral-900 min-h-screen flex flex-col items-center justify-center">
+        <div class="graph-container rounded shadow-md mb-8" ref="chartsContainer">
             <div v-for="option in selectedOptions">
                 <template v-if="option === 'Pie Chart'">
                     <PieChart
@@ -22,139 +22,89 @@
                     />
                 </template>
                 <template v-else-if="option === 'Table'">
-                    <div class="w-screen max-h-screen p-4 overflow-scroll" v-if="tableFields.length > 0">
+                    <div class="w-[80vw] max-h-screen p-4 overflow-scroll" v-if="tableFields.length > 0">
                         <DataTable table-name="Energy_efficiency_improvements_costs_LA" :fields="tableFields" />
                     </div>
                 </template>
             </div>
         </div>
 
-        <div class="flex items-start">
-            <div class="filter-box bg-white rounded flex items-center w-[650px]">
-                <div class="relative">
-                    <div class="length-checkit-options flex">
-                        <p class="text-xl font-bold ml-2 mt-2">Chart Types</p>
-                        <button class="text-xl ml-auto m-4 cursor-pointer mt-2" @click="toggleDropdown">
-                            {{ chartTypesDowndownOpen ? "▲" : "▼" }}
-                        </button>
+        <div class="flex items-start gap-x-4">
+            <UCard :ui="{ base: '', body: { padding: chartTypesDowndownOpen ? 'px-4 py-5 sm:p-6' : 'px-4 sm:px-6' } }">
+                <template #header>
+                    <div class="flex gap-1">
+                        <h2>Chart Types</h2>
+                        <UToggle
+                            class="ml-auto"
+                            on-icon="i-heroicons-chevron-up"
+                            off-icon="i-heroicons-chevron-down"
+                            v-model="chartTypesDowndownOpen"
+                        />
                     </div>
+                </template>
 
-                    <div class="flex p-1 pt-0 mr-auto" v-if="chartTypesDowndownOpen">
-                        <div class="heat-cold-options bg-white rounded p-4 ml-2 h-[8.5rem]">
-                            <div class="heat-container">
-                                <input
-                                    type="radio"
-                                    id="heat"
-                                    v-model="selectedHeatDwelling"
-                                    value="heating_type"
-                                    class="mr-2"
-                                />
-                                <label for="heat" class="cursor-pointer">Heating Type</label>
-                            </div>
-                            <div class="heat-container">
-                                <input
-                                    type="radio"
-                                    id="dwelling"
-                                    v-model="selectedHeatDwelling"
-                                    value="dwelling_type"
-                                    class="mr-2"
-                                />
-                                <label for="dwelling" class="cursor -pointer mt-2">Dwelling Type</label>
-                            </div>
-                        </div>
+                <div :class="{ 'h-0 overflow-hidden whitespace-nowrap': !chartTypesDowndownOpen }">
+                    <div class="flex gap-x-2">
+                        <URadioGroup
+                            v-model="selectedHeatDwelling"
+                            :options="[
+                                { value: 'heating_type', label: 'Heating Type' },
+                                { value: 'dwelling_type', label: 'Dwelling Type' },
+                            ]"
+                        />
 
-                        <div class="before-after-options bg-white rounded p-3 h-[8.5rem]">
-                            <div class="option-container">
-                                <input
-                                    type="radio"
-                                    id="average"
-                                    v-model="selectedAverageSum"
-                                    value="average"
-                                    class="mr-2"
-                                />
-                                <label for="average" class="cursor-pointer top-full">Average</label>
-                            </div>
-                            <div class="option-container">
-                                <input type="radio" id="sum" v-model="selectedAverageSum" value="sum" class="mr-2" />
-                                <label for="sum" class="cursor-pointer mt-2">Sum</label>
-                            </div>
-                        </div>
+                        <URadioGroup
+                            v-model="selectedAverageSum"
+                            :options="[
+                                { value: 'average', label: 'Average' },
+                                { value: 'sum', label: 'Sum' },
+                            ]"
+                        />
 
-                        <div class="top-full w-96 bg-white rounded shadow p-4 h-[8.5rem] ml-2">
-                            <div class="grid grid-cols-3 gap-4 justify-end">
-                                <div
-                                    v-for="option in ['Pie Chart', 'Bar Chart', 'Line Graph']"
-                                    :key="option"
-                                    class="option-container"
-                                >
-                                    <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
-                                    <p @click="selectOption(option)" class="cursor-pointer">{{ option }}</p>
-                                </div>
-                                <div
-                                    v-for="option in ['Table', 'Geographical Map']"
-                                    :key="option"
-                                    class="option-container"
-                                >
-                                    <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
-                                    <p @click="selectOption(option)" class="cursor-pointer">{{ option }}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <USelectMenu
+                            multiple
+                            v-model="selectedOptions"
+                            placeholder="Select Chart Types"
+                            :options="chartTypes"
+                        />
                     </div>
                 </div>
-            </div>
+            </UCard>
 
-            <div class="filter-box bg-white rounded flex items-center ml-4 w-[210px]">
-                <div class="relative">
-                    <div class="length-download-options flex">
-                        <p class="text-xl font-bold ml-2 mt-2">Download</p>
-                        <button class="text-xl mr-2 ml-auto m-4 cursor-pointer mt-2" @click="toggleDownloadDropdown">
-                            {{ downloadDropbarOpen ? "▲" : "▼" }}
-                        </button>
+            <UCard>
+                <template #header>
+                    <div class="flex gap-1">
+                        <h2>Download</h2>
+                        <UToggle
+                            class="ml-auto"
+                            on-icon="i-heroicons-chevron-up"
+                            off-icon="i-heroicons-chevron-down"
+                            v-model="downloadDropbarOpen"
+                        />
                     </div>
+                </template>
 
-                    <div class="p-1 pt-0 mr-auto" v-if="downloadDropbarOpen">
-                        <div class="download-snippet-options bg-white rounded p-3 h-[8.5rem]">
-                            <div class="option-container">
-                                <input
-                                    type="radio"
-                                    id="snippet"
-                                    v-model="SelectDownloadSnippet"
-                                    value="Snippet"
-                                    class="mr-2"
-                                />
-                                <label for="snippet" class="cursor-pointer top-full flex justify-center items-center">
-                                    <span class="text-2xl">
-                                        <font-awesome-icon icon="fa-solid fa-camera" />
-                                    </span>
-                                    <span class="text-center pl-2">Screenshot</span>
-                                </label>
-                            </div>
-                            <div class="option-container">
-                                <input
-                                    type="radio"
-                                    id="download"
-                                    v-model="SelectDownloadSnippet"
-                                    value="Download"
-                                    class="mr-2"
-                                />
-                                <label for="download" class="cursor-pointer top-full flex justify-center items-center">
-                                    <span class="text-2xl pr-2">
-                                        <font-awesome-icon icon="fa-solid fa-download" />
-                                    </span>
-                                    <span class="text-center">Download</span>
-                                </label>
-                            </div>
-                        </div>
+                <div :class="{ 'h-0 overflow-hidden whitespace-nowrap': !downloadDropbarOpen }">
+                    <div class="flex gap-x-2">
+                        <UButton color="red" icon="i-heroicons-camera" @click="downloadScreenshot">Screenshot</UButton>
+                        <UButton
+                            color="blue"
+                            icon="i-heroicons-arrow-down-tray"
+                            @click="downloadCSV('Energy_efficiency_improvements_costs_LA')"
+                            >Download</UButton
+                        >
                     </div>
                 </div>
-            </div>
+            </UCard>
         </div>
     </div>
 </template>
 
 <script setup>
+    import html2canvas from "html2canvas";
     const config = useRuntimeConfig();
+
+    const chartTypes = ["Pie Chart", "Bar Chart", "Table"];
 
     const chartTypesDowndownOpen = ref(true);
     const downloadDropbarOpen = ref(true);
@@ -206,16 +156,16 @@
         "Total energy efficiency improvements costs (GBP)",
     ];
 
-    function toggleDropdown() {
-        chartTypesDowndownOpen.value = !chartTypesDowndownOpen.value;
-    }
+    const chartsContainer = ref(null);
 
-    function toggleDownloadDropdown() {
-        toggleDownloadDropbarOpen.value = !toggleDownloadDropbarOpen.value;
-    }
+    async function downloadScreenshot() {
+        const canvas = await html2canvas(chartsContainer.value);
 
-    function selectOption(option) {
-        console.log(`Option '${option}' selected`);
+        const uri = canvas.toDataURL("image/png");
+        let link = document.createElement("a");
+        link.download = "screenshot.png";
+        link.href = uri;
+        link.click();
     }
 
     watch([selectedHeatDwelling, selectedOptions, selectedAverageSum], async () => {

@@ -1,356 +1,287 @@
 <template>
-    <div class="page-container bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-        <div class="graph-container rounded bg-white shadow-md mb-8">
+    <div class="page-container dark:bg-neutral-900 min-h-screen flex flex-col items-center justify-center">
+        <div class="graph-container rounded shadow-md mb-8" ref="chartsContainer">
             <div v-for="option in selectedOptions">
                 <template v-if="option === 'Pie Chart'">
-                    <PieChart v-if="pieChartData" :key="pieChartData.title" :title="pieChartData.title"
-                        :data="pieChartData.data" :as-percentage="pieChartData.asPercentage" />
+                    <PieChart
+                        v-if="pieChartData"
+                        :key="pieChartData.title"
+                        :title="pieChartData.title"
+                        :data="pieChartData.data"
+                        :as-percentage="pieChartData.asPercentage"
+                    />
                 </template>
-                <template v-if="option === 'Bar Chart'">
-                    <BarChart v-if="barChartData" :key="barChartData.title" :title="barChartData.title"
-                        :data="barChartData.data" :max="barChartData.max" :legend="barChartData.legend" />
+                <template v-else-if="option === 'Bar Chart'">
+                    <BarChart
+                        v-if="barChartData"
+                        :key="barChartData.title"
+                        :title="barChartData.title"
+                        :data="barChartData.data"
+                        :max="barChartData.max"
+                        :legend="barChartData.legend"
+                    />
                 </template>
             </div>
         </div>
 
-        <div class="flex items-start">
-            <div class="filter-box bg-white rounded flex items-center w-[650px]">
-                <div class="relative">
-                    <div class="length-checkit-options flex">
-                        <p class="text-xl font-bold ml-2 mt-2">Chart Types</p>
-                        <button class="text-xl ml-auto m-4 cursor-pointer mt-2" @click="toggleDropdown">
-                            {{ chartTypesDowndownOpen ? "▲" : "▼" }}
-                        </button>
+        <div class="flex items-start gap-x-4">
+            <UCard :ui="{ base: '', body: { padding: chartTypesDowndownOpen ? 'px-4 py-5 sm:p-6' : 'px-4 sm:px-6' } }">
+                <template #header>
+                    <div class="flex gap-1">
+                        <h2>Chart Types</h2>
+                        <UToggle
+                            class="ml-auto"
+                            on-icon="i-heroicons-chevron-up"
+                            off-icon="i-heroicons-chevron-down"
+                            v-model="chartTypesDowndownOpen"
+                        />
                     </div>
+                </template>
 
-                    <div class="flex p-1 pt-0 mr-auto" v-if="chartTypesDowndownOpen">
-                        <div class="before-after-options bg-white rounded p-3 h-[8.5rem]">
-                            <div class="option-container">
-                                <input type="radio" id="before" v-model="selectedBeforeAfterBoth" value="before"
-                                    class="mr-2" />
-                                <label for="before" class="cursor-pointer top-full">Before</label>
-                            </div>
-                            <div class="option-container">
-                                <input type="radio" id="after" v-model="selectedBeforeAfterBoth" value="after"
-                                    class="mr-2" />
-                                <label for="after" class="cursor-pointer mt-2">After</label>
-                            </div>
-                            <div class="option-container">
-                                <input type="radio" id="both" v-model="selectedBeforeAfterBoth" value="both" class="mr-2" />
-                                <label for="both" class="cursor-pointer mt-2">Both</label>
-                            </div>
-                        </div>
+                <div :class="{ 'h-0 overflow-hidden whitespace-nowrap': !chartTypesDowndownOpen }">
+                    <div class="flex gap-x-2">
+                        <URadioGroup
+                            v-model="selectedBeforeAfterBoth"
+                            :options="[
+                                { value: 'before', label: 'Before' },
+                                { value: 'after', label: 'After' },
+                                { value: 'both', label: 'Both' },
+                            ]"
+                        />
 
-                        <div class="heat-cold-options bg-white rounded p-4 ml-2 h-[8.5rem]">
-                            <div class="heat-container">
-                                <input type="radio" id="heat" v-model="selectedHeatDwelling" value="heating_type"
-                                    class="mr-2" />
-                                <label for="heat" class="cursor-pointer">Heating Type</label>
-                            </div>
-                            <div class="heat-container">
-                                <input type="radio" id="dwelling" v-model="selectedHeatDwelling" value="dwelling_type"
-                                    class="mr-2" />
-                                <label for="dwelling" class="cursor -pointer mt-2">Dwelling Type</label>
-                            </div>
-                        </div>
+                        <URadioGroup
+                            v-model="selectedHeatDwelling"
+                            :options="[
+                                { value: 'heating_type', label: 'Heating Type' },
+                                { value: 'dwelling_type', label: 'Dwelling Type' },
+                            ]"
+                        />
 
-                        <div class="before-after-options bg-white rounded p-3 h-[8.5rem]">
-                            <div class="option-container">
-                                <input type="radio" id="average" v-model="selectedAverageSum" value="average"
-                                    class="mr-2" />
-                                <label for="average" class="cursor-pointer top-full">Average</label>
-                            </div>
-                            <div class="option-container">
-                                <input type="radio" id="sum" v-model="selectedAverageSum" value="sum" class="mr-2" />
-                                <label for="sum" class="cursor-pointer mt-2">Sum</label>
-                            </div>
-                        </div>
+                        <URadioGroup
+                            v-model="selectedAverageSum"
+                            :options="[
+                                { value: 'average', label: 'Average' },
+                                { value: 'sum', label: 'Sum' },
+                            ]"
+                        />
 
-                        <div class="top-full w-96 bg-white rounded shadow p-4 h-[8.5rem] ml-2">
-                            <div class="grid grid-cols-3 gap-4 justify-end">
-                                <div v-for="option in ['Pie Chart', 'Bar Chart', 'Line Graph']" :key="option"
-                                    class="option-container">
-                                    <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
-                                    <p @click="selectOption(option)" class="cursor-pointer">{{ option }}</p>
-                                </div>
-                                <div v-for="option in ['Table', 'Geographical Map']" :key="option" class="option-container">
-                                    <input type="checkbox" v-model="selectedOptions" :value="option" class="mr-2" />
-                                    <p @click="selectOption(option)" class="cursor-pointer">{{ option }}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <USelectMenu
+                            multiple
+                            v-model="selectedOptions"
+                            placeholder="Select Chart Types"
+                            :options="chartTypes"
+                        />
                     </div>
                 </div>
-            </div>
+            </UCard>
 
-            <div class="filter-box bg-white rounded flex items-center ml-4 w-[210px]">
-                <div class="relative">
-                    <div class="length-download-options flex">
-                        <p class="text-xl font-bold ml-2 mt-2">Download</p>
-                        <button class="text-xl mr-2 ml-auto m-4 cursor-pointer mt-2" @click="toggleDownloadDropdown">
-                            {{ downloadDropbarOpen ? "▲" : "▼" }}
-                        </button>
+            <UCard>
+                <template #header>
+                    <div class="flex gap-1">
+                        <h2>Download</h2>
+                        <UToggle
+                            class="ml-auto"
+                            on-icon="i-heroicons-chevron-up"
+                            off-icon="i-heroicons-chevron-down"
+                            v-model="downloadDropbarOpen"
+                        />
                     </div>
+                </template>
 
-                    <div class="p-1 pt-0 mr-auto" v-if="downloadDropbarOpen">
-                        <div class="download-snippet-options bg-white rounded p-3 h-[8.5rem]">
-                            <div class="option-container">
-                                <input type="radio" id="snippet" v-model="SelectDownloadSnippet" value="Snippet"
-                                    class="mr-2" />
-                                <label for="snippet" class="cursor-pointer top-full flex justify-center items-center">
-                                    <span class="text-2xl">
-                                        <font-awesome-icon icon="fa-solid fa-camera" />
-                                    </span>
-                                    <span class="text-center pl-2">Screenshot</span>
-                                </label>
-                            </div>
-                            <div class="option-container">
-                                <input type="radio" id="download" v-model="SelectDownloadSnippet" value="Download"
-                                    class="mr-2" />
-                                <label for="download" class="cursor-pointer top-full flex justify-center items-center">
-                                    <span class="text-2xl pr-2">
-                                        <font-awesome-icon icon="fa-solid fa-download" />
-                                    </span>
-                                    <span class="text-center">Download</span>
-                                </label>
-                            </div>
-                        </div>
+                <div :class="{ 'h-0 overflow-hidden whitespace-nowrap': !downloadDropbarOpen }">
+                    <div class="flex gap-x-2">
+                        <UButton color="red" icon="i-heroicons-camera" @click="downloadScreenshot">Screenshot</UButton>
+                        <UButton
+                            color="blue"
+                            icon="i-heroicons-arrow-down-tray"
+                            @click="
+                                downloadCSVs(['Thermal_characteristics_afterEE', 'Thermal_characteristics_beforeEE'])
+                            "
+                            >Download</UButton
+                        >
                     </div>
                 </div>
-            </div>
+            </UCard>
         </div>
     </div>
 </template>
-  
+
 <script setup>
-const config = useRuntimeConfig();
+    import html2canvas from "html2canvas";
 
-const chartTypesDowndownOpen = ref(true);
-const downloadDropbarOpen = ref(true);
+    const config = useRuntimeConfig();
 
-const selectedOptions = ref([]);
+    const chartTypes = ["Pie Chart", "Bar Chart"];
 
-const selectedBeforeAfterBoth = ref(null);
-const selectedHeatDwelling = ref(null);
-const selectedAverageSum = ref(null);
+    const chartTypesDowndownOpen = ref(true);
+    const downloadDropbarOpen = ref(true);
 
-const SelectDownloadSnippet = ref(null);
+    const selectedOptions = ref([]);
 
-const pieChartData = ref(null);
-const barChartData = ref(null);
+    const selectedBeforeAfterBoth = ref(null);
+    const selectedHeatDwelling = ref(null);
+    const selectedAverageSum = ref(null);
 
-function toggleDropdown() {
-    chartTypesDowndownOpen.value = !chartTypesDowndownOpen.value;
-}
+    const SelectDownloadSnippet = ref(null);
 
-function toggleDownloadDropdown() {
-    toggleDownloadDropbarOpen.value = !toggleDownloadDropbarOpen.value;
-}
+    const pieChartData = ref(null);
+    const barChartData = ref(null);
 
-function selectOption(option) {
-    console.log(`Option '${option}' selected`);
-}
+    const chartsContainer = ref(null);
 
-watch([selectedBeforeAfterBoth, selectedHeatDwelling, selectedAverageSum, selectedOptions], async () => {
-    // If any of the needed options are left null, return.
-    if (!selectedBeforeAfterBoth.value || !selectedHeatDwelling.value || !selectedOptions.value || !selectedAverageSum.value) {
-        return;
+    async function downloadScreenshot() {
+        const canvas = await html2canvas(chartsContainer.value);
+
+        const uri = canvas.toDataURL("image/png");
+        let link = document.createElement("a");
+        link.download = "screenshot.png";
+        link.href = uri;
+        link.click();
     }
 
-    // Specific data we want to fetch from the API.
-    // The API selects the 'after' or 'before' data based on the 'rows' field.
-    // The 'filter' field is used to understand what column data we want to use in the calculations.
-    // The 'metric' field is used to understand what metric we want to have returned, e.g. mean or sum.
-    const data_required = [{ filter: selectedHeatDwelling.value, rows: selectedBeforeAfterBoth.value, metric: selectedAverageSum.value }];
+    watch([selectedBeforeAfterBoth, selectedHeatDwelling, selectedAverageSum, selectedOptions], async () => {
+        // If any of the needed options are left null, return.
+        if (
+            !selectedBeforeAfterBoth.value ||
+            !selectedHeatDwelling.value ||
+            !selectedOptions.value ||
+            !selectedAverageSum.value
+        ) {
+            return;
+        }
 
-    const { data: jsonData } = await useFetch(`${config.public.baseUrl}/api/Thermal_characteristics`, {
-        method: "post",
-        body: data_required,
-        transform: (response) => {
-            for (const key in response) {
-                const sumArrays = response[key]["sum"];
+        // Specific data we want to fetch from the API.
+        // The API selects the 'after' or 'before' data based on the 'rows' field.
+        // The 'filter' field is used to understand what column data we want to use in the calculations.
+        // The 'metric' field is used to understand what metric we want to have returned, e.g. mean or sum.
+        const data_required = [
+            {
+                filter: selectedHeatDwelling.value,
+                rows: selectedBeforeAfterBoth.value,
+                metric: selectedAverageSum.value,
+            },
+        ];
 
-                if (sumArrays && Array.isArray(sumArrays) && sumArrays.length >= 2) {
-                    console.log(`Processing key: ${key}`);
+        const { data: jsonData } = await useFetch(`${config.public.baseUrl}/api/Thermal_characteristics`, {
+            method: "post",
+            body: data_required,
+            transform: response => {
+                for (const key in response) {
+                    const sumArrays = response[key]["sum"];
 
-                    sumArrays.forEach((datasetSumArray, index) => {
-                        console.log(`Dataset ${index + 1}:`);
+                    if (sumArrays && Array.isArray(sumArrays) && sumArrays.length >= 2) {
+                        console.log(`Processing key: ${key}`);
 
-                        for (const item of datasetSumArray) {
-                            console.log("Original value:", item[1]);
+                        sumArrays.forEach((datasetSumArray, index) => {
+                            console.log(`Dataset ${index + 1}:`);
 
-                            // Check if the value is a valid number before division
-                            if (typeof item[1] === "number" && !isNaN(item[1])) {
-                                // In this instance, we know the sum is in kilowatt hours.
-                                // Convert each sum to gigawatt hours from kilowatt hours.
-                                item[1] = item[1] / 1000000;
-                                console.log("Transformed value:", item[1]);
-                            } else {
-                                console.log("Invalid value:", item[1]);
+                            for (const item of datasetSumArray) {
+                                console.log("Original value:", item[1]);
+
+                                // Check if the value is a valid number before division
+                                if (typeof item[1] === "number" && !isNaN(item[1])) {
+                                    // In this instance, we know the sum is in kilowatt hours.
+                                    // Convert each sum to gigawatt hours from kilowatt hours.
+                                    item[1] = item[1] / 1000000;
+                                    console.log("Transformed value:", item[1]);
+                                } else {
+                                    console.log("Invalid value:", item[1]);
+                                }
                             }
-                        }
-                    });
-                } else {
-                    console.log(`Invalid or missing 'sum' array for key: ${key}`);
+                        });
+                    } else {
+                        console.log(`Invalid or missing 'sum' array for key: ${key}`);
+                    }
+                }
+                // Array of objects containing the data for each chart.
+                return response;
+            },
+        });
+
+        // Check if no data returned by API.
+        if (!jsonData || !jsonData.value) {
+            return;
+        }
+
+        var chartData = [];
+        var title = "";
+        // TODO should probably be toggleable in UI.
+        const asPercentage = false;
+
+        // Titles for graphs need to reflect which metric is being displayed.
+        if (selectedBeforeAfterBoth.value !== "both") {
+            // If not both, then we just need to get the data for the selected before/after.
+            chartData =
+                jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfterBoth.value}`][
+                    selectedAverageSum.value
+                ];
+            if (selectedAverageSum.value === "average") {
+                title = `Annual heat demand per ${
+                    selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
+                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+            } else if (selectedAverageSum.value === "sum") {
+                title = `Breakdown of overall heat demand per ${
+                    selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
+                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+            }
+            for (const option of selectedOptions.value) {
+                switch (option) {
+                    case "Pie Chart":
+                        pieChartData.value = {
+                            title: title,
+                            data: chartData,
+                            asPercentage,
+                        };
+                        break;
+                    case "Bar Chart":
+                        // Wasn't sure what to put for the legend.
+                        barChartData.value = {
+                            title: title,
+                            data: { datasets: [chartData] },
+                            max: Infinity,
+                            legend: [
+                                selectedHeatDwelling.value === "heating_type" ? "Heating Technology" : "Dwelling Type",
+                            ],
+                        };
+                        break;
+                    case "Line Graph":
+                        break;
+                    case "Table":
+                        break;
+                    case "Geographical Map":
+                        break;
                 }
             }
-            // Array of objects containing the data for each chart.
-            return response;
-        },
+        } else if (selectedBeforeAfterBoth.value === "both") {
+            if (selectedAverageSum.value === "average") {
+                title = `Annual heat demand per ${
+                    selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
+                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+            } else if (selectedAverageSum.value === "sum") {
+                title = `Breakdown of overall heat demand per ${
+                    selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
+                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
+            }
+            // Just do clustured bar chart.
+            var chart_datasets =
+                jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfterBoth.value}`][
+                    selectedAverageSum.value
+                ];
+            for (const option of selectedOptions.value) {
+                switch (option) {
+                    case "Bar Chart":
+                        // Wasn't sure what to put for the legend.
+                        barChartData.value = {
+                            title: title,
+                            data: { datasets: chart_datasets },
+                            max: Infinity,
+                            legend: ["Before", "After"],
+                        };
+                        break;
+                }
+            }
+        }
     });
-
-    // Check if no data returned by API.
-    if (!jsonData || !jsonData.value) {
-        return;
-    }
-
-    var chartData = [];
-    var title = "";
-    // TODO should probably be toggleable in UI.
-    const asPercentage = false;
-
-    // Titles for graphs need to reflect which metric is being displayed.
-    if (selectedBeforeAfterBoth.value !== "both") {
-        // If not both, then we just need to get the data for the selected before/after.
-        chartData = jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfterBoth.value}`][selectedAverageSum.value];
-        if (selectedAverageSum.value === "average") {
-            title = `Annual heat demand per ${selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
-        } else if (selectedAverageSum.value === "sum") {
-            title = `Breakdown of overall heat demand per ${selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } ${selectedBeforeAfterBoth.value} energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
-        }
-        for (const option of selectedOptions.value) {
-            switch (option) {
-                case "Pie Chart":
-                    pieChartData.value = {
-                        title: title,
-                        data: chartData,
-                        asPercentage,
-                    };
-                    break;
-                case "Bar Chart":
-                    // Wasn't sure what to put for the legend.
-                    barChartData.value = {
-                        title: title,
-                        data: { datasets: [chartData] },
-                        max: Infinity,
-                        legend: [selectedHeatDwelling.value === "heating_type" ? "Heating Technology" : "Dwelling Type"]
-                    };
-                    break;
-                case "Line Graph":
-                    break;
-                case "Table":
-                    break;
-                case "Geographical Map":
-                    break;
-            }
-        }
-    } else if (selectedBeforeAfterBoth.value === "both") {
-        if (selectedAverageSum.value === "average") {
-            title = `Annual heat demand per ${selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
-        } else if (selectedAverageSum.value === "sum") {
-            title = `Breakdown of overall heat demand per ${selectedHeatDwelling.value === "heating_type" ? "heating technology" : "dwelling type"
-                } before & after energy efficiency improvements ${asPercentage ? "(%)" : "(GWh)"}`;
-        }
-        // Just do clustured bar chart.
-        var chart_datasets = jsonData.value[`${selectedHeatDwelling.value}:${selectedBeforeAfterBoth.value}`][selectedAverageSum.value]
-        for (const option of selectedOptions.value) {
-            switch (option) {
-                case "Bar Chart":
-                    // Wasn't sure what to put for the legend.
-                    barChartData.value = {
-                        title: title,
-                        data: { datasets: chart_datasets },
-                        max: Infinity,
-                        legend: ["Before", "After"]
-                    };
-                    break;
-            }
-        }
-    }
-});
 </script>
-  
-<style scoped>
-.combined-container {
-    display: flex;
-    text-align: center;
-    align-items: center;
-}
 
-.option-container {
-    display: flex;
-    align-items: center;
-    @apply pb-1;
-}
-
-.thistext {
-    margin-right: -65px;
-    align-items: left;
-}
-
-.heat-container {
-    display: flex;
-    align-items: center;
-}
-
-.icon {
-    margin-left: 10px;
-    margin-top: px;
-}
-
-.anothericon {
-    margin-left: 1px;
-    margin-top: px;
-}
-
-.another-cotainer {
-    position: relative;
-    top: 1200px;
-}
-
-.download-snippet-options,
-.before-after-options,
-.heat-cold-options {
-    top: 100%;
-    left: 0;
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    background-color: white;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.before-after-options input[type="radio"],
-.download-snippet-options input[type="radio"],
-.heat-cold-options input[type="radio"] {
-    display: none;
-}
-
-.download-snippet-options label,
-.before-after-options label,
-.heat-cold-options label {
-    cursor: pointer;
-    padding: 0.75rem;
-    width: 100%;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.25rem;
-}
-
-.download-snippet-options input[type="radio"]:checked+label,
-.before-after-options input[type="radio"]:checked+label,
-.heat-cold-options input[type="radio"]:checked+label {
-    background-color: #ced4d8;
-    color: white;
-}
-
-.length-checkit-options {
-    width: 660px;
-}
-
-.length-download-options {
-    height: 52px;
-    width: 210px;
-}
-</style>
+<style></style>
