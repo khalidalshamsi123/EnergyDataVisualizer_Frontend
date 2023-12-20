@@ -1,31 +1,35 @@
 <template>
-    <h1>Contact Us:</h1>
-    <form @submit.prevent="submit(form)">
-        <div class="input-wrapper">
-            <label for="email">E-mail:</label>
-            <input required v-model="form.email" type="email" name="email" />
+    <div class="h-screen flex items-center justify-center">
+        <div>
+            <h1 class="text-2xl font-bold text-center">Contact Us:</h1>
+            <form @submit.prevent="submit(form)">
+                <div class="input-wrapper">
+                    <label for="email">E-mail:</label>
+                    <input required v-model="form.email" type="email" name="email" />
+                </div>
+                <div class="input-wrapper">
+                    <label for="name">Name:</label>
+                    <input required v-model="form.name" type="text" name="name" />
+                </div>
+                <div class="input-wrapper">
+                    <label for="subject">Subject:</label>
+                    <input required v-model="form.subject" type="text" name="subject" />
+                </div>
+                <div class="input-wrapper">
+                    <label for="message">Message:</label>
+                    <textarea required v-model="form.message" type="text" name="message"></textarea>
+                </div>
+                <div id="submitButton">
+                    <button type="submit">
+                        <template v-if="waiting">loading...</template>
+                        <template v-if="!waiting">Submit</template>
+                    </button>
+                </div>
+                <p v-if="errors">Something Went Wrong</p>
+                <p v-if="succsess">Form Is sent</p>
+            </form>
         </div>
-        <div class="input-wrapper">
-            <label for="name">Name:</label>
-            <input required v-model="form.name" type="text" name="name" />
-        </div>
-        <div class="input-wrapper">
-            <label for="subject">Subject:</label>
-            <input required v-model="form.subject" type="text" name="subject" />
-        </div>
-        <div class="input-wrapper">
-            <label for="message">Message:</label>
-            <textarea required v-model="form.message" type="text" name="message"></textarea>
-        </div>
-        <div id="submitButton">
-            <button type="submit">
-                <template v-if="waiting">loading...</template>
-                <template v-if="!waiting">Submit</template>
-            </button>
-        </div>
-        <p v-if="errors">Something Went Wrong</p>
-        <p v-if="succsess">Form Is sent</p>
-    </form>
+    </div>
 </template>
 
 <script setup>
